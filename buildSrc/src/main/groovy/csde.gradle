@@ -1,0 +1,252 @@
+import com.r3.csde.CsdeRpcInterface
+
+plugins {
+    id 'java-library'
+    id 'checkstyle'
+    id 'groovy'
+    id 'java'
+}
+
+
+configurations {
+    combinedWorker{
+        canBeConsumed = false
+        canBeResolved= true
+    }
+
+    myPostgresJDBC {
+        canBeConsumed = false
+        canBeResolved = true
+    }
+
+}
+
+// Dependencies for supporting tools
+dependencies {
+    combinedWorker "net.corda:corda-combined-worker:$combinedWorkerVersion"
+    myPostgresJDBC 'org.postgresql:postgresql:42.4.1'
+    implementation "org.codehaus.groovy:groovy-json:3.0.9"
+}
+
+
+def pluginGroupName = "CSDE"
+def pluginImplGroupName = "other"
+def cordaBinDir= System.getProperty('user.home') + "/.corda/corda5"
+def cordaCliBinDir = System.getProperty('user.home') + "/.corda/cli"
+def cordaJDBCDir = cordaBinDir + "/jdbcDrivers"
+def signingCertAlias="gradle-plugin-default-key"
+// Get error if this is not a autotyped object
+// def signingCertFName = "$rootDir/config/gradle-plugin-default-key.pem"
+def signingCertFName = rootDir.toString() + "/csde-config/gradle-plugin-default-key.pem"
+def keystoreAlias = "my-signing-key"
+def keystoreFName = devEnvWorkspace + "/signingkeys.pfx"
+def keystoreCertFName = devEnvWorkspace + "/signingkey1.pem"
+def combiWorkerPidCacheFile = devEnvWorkspace + "/CordaPID.dat"
+
+
+// Need to read things from cordapp plugin
+def cpiName =  'cpi name'
+
+def csdeHelper = new CsdeRpcInterface(project,
+        cordaClusterURL.toString(),
+        cordaRpcUser,
+        cordaRpcPasswd,
+        devEnvWorkspace,
+        new String("${System.getProperty("java.home")}/bin"),
+        dbContainerName,
+        cordaJDBCDir,
+        combiWorkerPidCacheFile
+)
+
+
+tasks.register("getPostgresJDBC") {
+    group = pluginImplGroupName
+    doLast {
+        copy {
+            from configurations.myPostgresJDBC
+            into "$cordaJDBCDir"
+        }
+    }
+}
+
+tasks.register('projInit') {
+    group = pluginImplGroupName
+    doLast {
+         mkdir devEnvWorkspace
+    }
+}
+
+tasks.register("createGroupPolicy") {
+    group = pluginImplGroupName
+    dependsOn('projInit')
+    doLast {
+
+            def groupPolicyFName = new String("${devEnvWorkspace}/GroupPolicy.json")
+            def devnetFName = new String("$rootDir/csde-config/dev-net.json")
+            File groupPolicyFile = new File(groupPolicyFName)
+            File devnetFile = new File(devnetFName)
+            if (!groupPolicyFile.exists() || groupPolicyFile.lastModified() < devnetFile.lastModified()) {
+                def configX500Ids = csdeHelper.getConfigX500Ids()
+
+                println("createGroupPolicy: Creating a GroupPolicy")
+
+                javaexec {
+                    classpath = files("$cordaCliBinDir/corda-cli.jar")
+                    jvmArgs = ["-Dpf4j.pluginsDir=$cordaCliBinDir/plugins/"]
+                    standardOutput = new FileOutputStream(groupPolicyFName)
+                    LinkedList<String> myArgs = new LinkedList<String>()
+                    myArgs.add("mgm")
+                    myArgs.add("groupPolicy")
+                    configX500Ids.forEach {
+                        myArgs.add("--name")
+                        myArgs.add("$it")
+                    }
+
+                    myArgs.add("--endpoint-protocol=1")
+                    myArgs.add("--endpoint=http://localhost:1080")
+                    args = myArgs
+                }
+
+            } else {
+                println("createPolicyTask: everything up to date; nothing to do.")
+            }
+
+    }
+}
+
+tasks.register("getDevCordaLite", Copy) {
+    group = pluginImplGroupName
+    from configurations.combinedWorker
+    into cordaBinDir
+}
+
+tasks.register('createKeystore') {
+    group = pluginImplGroupName
+    dependsOn('projInit')
+    doLast {
+        File keystoreFile = new File(keystoreFName)
+        if(!keystoreFile.exists()) {
+            println('createKeystore: Create a keystore')
+            exec {
+                commandLine "keytool", "-genkeypair",
+                        "-alias", keystoreAlias,
+                        "-keystore", keystoreFName,
+                        "-storepass", "keystore password",
+                        "-dname", "CN=CPI Example - My Signing Key, O=CorpOrgCorp, L=London, C=GB",
+                        "-keyalg", "RSA",
+                        "-storetype", "pkcs12",
+                        "-validity", "4000"
+            }
+            // Need to add the default signing key to the keystore
+            exec {
+                commandLine "keytool", "-importcert",
+                        "-keystore", keystoreFName,
+                        "-storepass", "keystore password",
+                        "-noprompt",
+                        "-alias", signingCertAlias,
+                        "-file", signingCertFName
+            }
+            // keytool -exportcert -rfc -alias "signing key 1" -keystore signingkeys.pfx -storepass "keystore password" -file signingkey1.pem
+            exec {
+                commandLine "keytool",
+                        "-exportcert", "-rfc", "-alias", keystoreAlias,
+                        "-keystore", keystoreFName,
+                        "-storepass", "keystore password",
+                        "-file", keystoreCertFName
+            }
+        }
+        else {
+            println('createKeystore:  keystore already created; nothing to do.')
+        }
+
+    }
+}
+
+
+tasks.register('buildCPI') {
+    group = pluginGroupName
+    dependsOn('build', 'createGroupPolicy', 'createKeystore')
+
+    doLast{
+        def cpiFile= buildDir.toString() + "/" + project.archivesBaseName + "-" + project.version + ".cpi"
+        delete { delete cpiFile }
+        File srcDir
+        srcDir = file('build/libs')
+
+        // Create a file collection using a closure
+        def collection = layout.files { srcDir.listFiles() }
+        def cpbs = collection.filter { it.getName().endsWith(".cpb") }
+
+        javaexec {
+            classpath = files("$cordaCliBinDir/corda-cli.jar")
+            jvmArgs = ["-Dpf4j.pluginsDir=$cordaCliBinDir/plugins/"]
+            args = ['package', 'create-cpi',
+                    '--cpb', cpbs.singleFile.absolutePath,
+                    '--group-policy', "${devEnvWorkspace}/GroupPolicy.json",
+                    '--cpi-name', cpiName,
+                    '--cpi-version', project.version,
+                    '--file', cpiFile,
+                    '--keystore', "${devEnvWorkspace}/signingkeys.pfx",
+                    '--storepass', 'keystore password',
+                    '--key', 'my-signing-key' ]
+        }
+    }
+
+}
+
+tasks.register("deployCPI") {
+    group = pluginImplGroupName
+    dependsOn('buildCPI')
+    doLast {
+        csdeHelper.uploadCertificate(signingCertAlias, signingCertFName)
+        csdeHelper.uploadCertificate(keystoreAlias, keystoreCertFName)
+        csdeHelper.deployCPI("${buildDir}/${project.archivesBaseName}-${project.version}.cpi", cpiName, project.version)
+    }
+}
+
+tasks.register("createAndRegVNodes") {
+    group = pluginImplGroupName
+    dependsOn('deployCPI')
+    doLast {
+        csdeHelper.createAndRegVNodes()
+    }
+}
+
+tasks.register('listVNodes') {
+    group = pluginGroupName
+    doLast {
+        csdeHelper.listVNodes()
+    }
+}
+
+tasks.register('listCPIs') {
+    group = pluginImplGroupName
+    doLast {
+        csdeHelper.listCPIs()
+    }
+}
+
+// Empty task, just acts as the Task user entry point task.
+tasks.register('deployCordapp') {
+    group = pluginGroupName
+    dependsOn("createAndRegVNodes")
+}
+
+tasks.register("startCorda") {
+    group = pluginGroupName
+    dependsOn('getDevCordaLite', 'getPostgresJDBC')
+    doLast {
+        mkdir devEnvWorkspace
+        csdeHelper.startCorda()
+    }
+}
+
+tasks.register("stopCorda") {
+    group = pluginGroupName
+    doLast {
+        csdeHelper.stopCorda()
+    }
+}
+
+
+
