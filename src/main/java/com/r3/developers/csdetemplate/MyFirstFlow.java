@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 // to link the two sides of the flow together they need to have the same protocol.
 @InitiatingFlow(protocol = "another-flow")
 // MyFirstFlow should inherit from RPCStartableFlow, which tells Corda it can be started via an RPC call
-class MyFirstFlow implements RPCStartableFlow {
+public class MyFirstFlow implements RPCStartableFlow {
 
     // It is useful to be able to log messages from the flows for debugging.
     private final Logger log = LoggerFactory.getLogger(MyFirstFlow.class);
@@ -43,6 +43,7 @@ class MyFirstFlow implements RPCStartableFlow {
     // When a flow is invoked it's call() method is called.
     // call() methods must be marked as @Suspendable, this allows Corda to pause mid-execution to wait
     // for a response from the other flows and services
+    @NotNull
     @Suspendable
     @Override
     public String call(@NotNull RPCRequestData requestBody) {
@@ -57,7 +58,7 @@ class MyFirstFlow implements RPCStartableFlow {
         MyFirstFlowStartArgs flowArgs = requestBody.getRequestBodyAs(jsonMarshallingService, MyFirstFlowStartArgs.class);
 
         // Obtain the MemberX500Name of counterparty
-        MemberX500Name otherMember = flowArgs.othermember;
+        MemberX500Name otherMember = flowArgs.otherMember;
 
         // Get our identity from the MemberLookup service.
         MemberX500Name ourIdentity = memberLookup.myInfo().getName();

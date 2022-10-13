@@ -45,6 +45,7 @@ cordapp {
     }
 }
 
+/*
 // Declare the set of Kotlin compiler options we need to build a CorDapp.
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
     kotlinOptions {
@@ -71,6 +72,19 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
         ]
     }
 }
+
+ */
+
+// Declare the set of Kotlin compiler options we need to build a CorDapp.
+tasks.withType(JavaCompile) {
+
+    // -parameters - Needed for reflection and serialization to work correctly.
+    options.compilerArgs += [
+            "-parameters"
+    ]
+}
+
+
 
 repositories {
     // All dependencies are held in Maven Central
@@ -134,7 +148,7 @@ test {
 publishing {
     publications {
             maven(MavenPublication) {
-                artifactId "corda-CSDE-kotlin-sample"
+                artifactId "corda-CSDE-java-sample"
                 groupId project.group
                 artifact jar
             }

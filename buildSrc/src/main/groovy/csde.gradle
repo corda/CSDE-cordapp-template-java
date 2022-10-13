@@ -2,7 +2,6 @@ import com.r3.csde.CsdeRpcInterface
 
 plugins {
     id 'java-library'
-    id 'checkstyle'
     id 'groovy'
     id 'java'
 }
@@ -37,7 +36,7 @@ def cordaJDBCDir = cordaBinDir + "/jdbcDrivers"
 def signingCertAlias="gradle-plugin-default-key"
 // Get error if this is not a autotyped object
 // def signingCertFName = "$rootDir/config/gradle-plugin-default-key.pem"
-def signingCertFName = rootDir.toString() + "/csde-config/gradle-plugin-default-key.pem"
+def signingCertFName = rootDir.toString() + "/config/gradle-plugin-default-key.pem"
 def keystoreAlias = "my-signing-key"
 def keystoreFName = devEnvWorkspace + "/signingkeys.pfx"
 def keystoreCertFName = devEnvWorkspace + "/signingkey1.pem"
@@ -82,7 +81,7 @@ tasks.register("createGroupPolicy") {
     doLast {
 
             def groupPolicyFName = new String("${devEnvWorkspace}/GroupPolicy.json")
-            def devnetFName = new String("$rootDir/csde-config/dev-net.json")
+            def devnetFName = new String("$rootDir/config/dev-net.json")
             File groupPolicyFile = new File(groupPolicyFName)
             File devnetFile = new File(devnetFName)
             if (!groupPolicyFile.exists() || groupPolicyFile.lastModified() < devnetFile.lastModified()) {
@@ -128,7 +127,7 @@ tasks.register('createKeystore') {
         if(!keystoreFile.exists()) {
             println('createKeystore: Create a keystore')
             exec {
-                commandLine "keytool", "-genkeypair",
+                commandLine "${System.getProperty("java.home")}/bin/keytool", "-genkeypair",
                         "-alias", keystoreAlias,
                         "-keystore", keystoreFName,
                         "-storepass", "keystore password",
@@ -139,7 +138,7 @@ tasks.register('createKeystore') {
             }
             // Need to add the default signing key to the keystore
             exec {
-                commandLine "keytool", "-importcert",
+                commandLine "${System.getProperty("java.home")}/bin/keytool", "-importcert",
                         "-keystore", keystoreFName,
                         "-storepass", "keystore password",
                         "-noprompt",
@@ -148,7 +147,7 @@ tasks.register('createKeystore') {
             }
             // keytool -exportcert -rfc -alias "signing key 1" -keystore signingkeys.pfx -storepass "keystore password" -file signingkey1.pem
             exec {
-                commandLine "keytool",
+                commandLine "${System.getProperty("java.home")}/bin/keytool",
                         "-exportcert", "-rfc", "-alias", keystoreAlias,
                         "-keystore", keystoreFName,
                         "-storepass", "keystore password",

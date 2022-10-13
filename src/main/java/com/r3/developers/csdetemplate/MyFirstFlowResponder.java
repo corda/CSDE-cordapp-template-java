@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 // to link the two sides of the flow together they need to have the same protocol.
 @InitiatedBy(protocol = "another-flow")
 // Responder flows must inherit from ResponderFlow
-class MyFirstFlowResponder implements ResponderFlow {
+public class MyFirstFlowResponder implements ResponderFlow {
 
     // It is useful to be able to log messages from the flows for debugging.
     private final Logger log = LoggerFactory.getLogger(MyFirstFlowResponder.class);
