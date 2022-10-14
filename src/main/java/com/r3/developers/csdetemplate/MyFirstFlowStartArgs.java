@@ -2,8 +2,7 @@ package com.r3.developers.csdetemplate;
 
 import net.corda.v5.base.types.MemberX500Name;
 
-// // A class to hold the arguments required to start the flow
-//class MyFirstFlowStartArgs(val otherMember: MemberX500Name)
+// A class to hold the arguments required to start the flow
 public class MyFirstFlowStartArgs {
     public MemberX500Name otherMember;
 
