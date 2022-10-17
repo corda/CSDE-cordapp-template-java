@@ -1,6 +1,5 @@
 package com.r3.developers.csdetemplate;
 
-
 import net.corda.simulator.HoldingIdentity;
 import net.corda.simulator.RequestData;
 import net.corda.simulator.SimulatedVirtualNode;

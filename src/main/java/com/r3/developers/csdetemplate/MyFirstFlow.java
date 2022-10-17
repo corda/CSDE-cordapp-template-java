@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 // MyFirstFlow is an initiating flow, it's corresponding responder flow is called MyFirstFlowResponder (defined below)
 // to link the two sides of the flow together they need to have the same protocol.
-@InitiatingFlow(protocol = "another-flow")
+@InitiatingFlow(protocol = "my-first-flow")
 // MyFirstFlow should inherit from RPCStartableFlow, which tells Corda it can be started via an RPC call
 public class MyFirstFlow implements RPCStartableFlow {
 
@@ -40,7 +40,7 @@ public class MyFirstFlow implements RPCStartableFlow {
 
     public MyFirstFlow() {}
 
-    // When a flow is invoked it's call() method is called.
+    // When a flow is invoked its call() method is called.
     // call() methods must be marked as @Suspendable, this allows Corda to pause mid-execution to wait
     // for a response from the other flows and services
     @NotNull
