@@ -10,6 +10,6 @@ public class MyFirstFlowStartArgs {
         this.otherMember = otherMember;
     }
 
-    // The JSON Marshalling Service, that handles serialisation, needs this constructor.
+    // The JSON Marshalling Service, which handles serialisation, needs this constructor.
     public MyFirstFlowStartArgs() {}
 }

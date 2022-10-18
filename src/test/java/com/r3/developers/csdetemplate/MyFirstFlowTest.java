@@ -25,7 +25,7 @@ class MyFirstFlowTest {
         HoldingIdentity bobHoldingID = HoldingIdentity.Companion.create(bobX500);
 
         // Create Alice and Bob's virtual nodes, including the Class's of the flows which will be registered on each node.
-        // We don't assign Bob's virtual node to a val because we don't need it for this particular test.
+        // We don't assign Bob's virtual node to a variable because we don't need it for this particular test.
         SimulatedVirtualNode aliceVN = simulator.createVirtualNode(aliceHoldingID, MyFirstFlow.class);
         simulator.createVirtualNode(bobHoldingID, MyFirstFlowResponder.class);
 
@@ -35,7 +35,7 @@ class MyFirstFlowTest {
         // Create a requestData object
         RequestData requestData = RequestData.Companion.create(
                 "request no 1",        // A unique reference for the instance of the flow request
-                MyFirstFlow.class,        // The name of the flow class which is to be started
+                MyFirstFlow.class,              // The name of the flow class which is to be started
                 myFirstFlowStartArgs            // The object which contains the start arguments of the flow
         );
 

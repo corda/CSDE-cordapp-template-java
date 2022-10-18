@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-// MyFirstFlowResponder is a responder flow, it's corresponding initiating flow is called MyFirstFlow (defined in MyFirstFlow.java)
+// MyFirstFlowResponder is a responder flow, its corresponding initiating flow is called MyFirstFlow (defined in MyFirstFlow.java)
 // to link the two sides of the flow together they need to have the same protocol.
 @InitiatedBy(protocol = "my-first-flow")
 // Responder flows must inherit from ResponderFlow
