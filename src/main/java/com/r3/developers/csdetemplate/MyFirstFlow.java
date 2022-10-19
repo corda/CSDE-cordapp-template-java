@@ -46,7 +46,7 @@ public class MyFirstFlow implements RPCStartableFlow {
     @NotNull
     @Suspendable
     @Override
-    public String call(@NotNull RPCRequestData requestBody) {
+    public String call(RPCRequestData requestBody) {
 
         // Useful logging to follow what's happening in the console or logs
         log.info("MFF: MyFirstFlow.call() called");

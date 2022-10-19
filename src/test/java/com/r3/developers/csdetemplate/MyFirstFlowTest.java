@@ -15,8 +15,8 @@ class MyFirstFlowTest {
     private MemberX500Name bobX500 = MemberX500Name.parse("CN=Bob, OU=Test Dept, O=R3, L=London, C=GB");
 
     @Test
+    @SuppressWarnings("unchecked")
     public void test_that_MyFirstFLow_returns_correct_message() {
-
         // Instantiate an instance of the Simulator
         Simulator simulator = new Simulator();
 
