@@ -11,9 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-// MyFirstFlowResponder is a responder flow, it's corresponding initiating flow is called MyFirstFlow (defined above)
+// MyFirstFlowResponder is a responder flow, its corresponding initiating flow is called MyFirstFlow (defined in MyFirstFlow.java)
 // to link the two sides of the flow together they need to have the same protocol.
-@InitiatedBy(protocol = "another-flow")
+@InitiatedBy(protocol = "my-first-flow")
 // Responder flows must inherit from ResponderFlow
 public class MyFirstFlowResponder implements ResponderFlow {
 
@@ -23,14 +23,14 @@ public class MyFirstFlowResponder implements ResponderFlow {
     // MemberLookup provides a service for looking up information about members of the Virtual Network which
     // this CorDapp is operating in.
     @CordaInject
-    MemberLookup memberLookup;
+    public MemberLookup memberLookup;
 
     public MyFirstFlowResponder() {}
 
     // Responder flows are invoked when an initiating flow makes a call via a session set up with the Virtual
-    // node hosting the Responder flow. When a responder flow is invoked it's call() method is called.
+    // node hosting the Responder flow. When a responder flow is invoked its call() method is called.
     // call() methods must be marked as @Suspendable, this allows Corda to pause mid-execution to wait
-    // for a response from the other flows and services/
+    // for a response from the other flows and services.
     // The Call method has the flow session passed in as a parameter by Corda so the session is available to
     // responder flow code, you don't need to inject the FlowMessaging service.
     @Suspendable
