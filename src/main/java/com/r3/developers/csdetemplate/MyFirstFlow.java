@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 // MyFirstFlow is an initiating flow, it's corresponding responder flow is called MyFirstFlowResponder (defined below)
 // to link the two sides of the flow together they need to have the same protocol.
-@InitiatingFlow(protocol = "another-flow")
+@InitiatingFlow(protocol = "my-first-flow")
 // MyFirstFlow should inherit from RPCStartableFlow, which tells Corda it can be started via an RPC call
 public class MyFirstFlow implements RPCStartableFlow {
 
@@ -26,27 +26,27 @@ public class MyFirstFlow implements RPCStartableFlow {
 
     // JsonMarshallingService provides a Service for manipulating json
     @CordaInject
-    JsonMarshallingService jsonMarshallingService;
+    public JsonMarshallingService jsonMarshallingService;
 
     // FlowMessaging provides a service for establishing flow sessions between Virtual Nodes and
     // sending and receiving payloads between them
     @CordaInject
-    FlowMessaging flowMessaging;
+    public FlowMessaging flowMessaging;
 
     // MemberLookup provides a service for looking up information about members of the Virtual Network which
     // this CorDapp is operating in.
     @CordaInject
-    MemberLookup memberLookup;
+    public MemberLookup memberLookup;
 
     public MyFirstFlow() {}
 
-    // When a flow is invoked it's call() method is called.
+    // When a flow is invoked its call() method is called.
     // call() methods must be marked as @Suspendable, this allows Corda to pause mid-execution to wait
     // for a response from the other flows and services
     @NotNull
     @Suspendable
     @Override
-    public String call(@NotNull RPCRequestData requestBody) {
+    public String call(RPCRequestData requestBody) {
 
         // Useful logging to follow what's happening in the console or logs
         log.info("MFF: MyFirstFlow.call() called");

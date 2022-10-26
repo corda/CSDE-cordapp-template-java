@@ -7,11 +7,11 @@ import net.corda.v5.base.types.MemberX500Name;
 // to be able to send from one virtual node to another.
 @CordaSerializable
 public class Message {
-    // public Message() {}
     public Message(MemberX500Name sender, String message) {
         this.sender = sender;
         this.message = message;
     }
+
     public MemberX500Name getSender() {
         return sender;
     }

@@ -6,4 +6,5 @@ cordaPipeline(
     runUnitTests: false,
     dedicatedJobForSnykDelta: false,
     slackChannel: '#corda-corda5-dev-ex-build-notifications'
+    dedicatedJobForSnykDelta: false
     )
