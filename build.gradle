@@ -31,7 +31,7 @@ def javaVersion = VERSION_11
 cordapp {
     // "targetPlatformVersion" and "minimumPlatformVersion" are intended to specify the preferred
     // and earliest versions of the Corda platform that the CorDapp will run on respectively.
-    // Enforced versioning has not implemented yet so we need to pass in a dummy value for now.
+    // Enforced versioning has not been implemented yet, so enter a dummy value for now.
     // The platform version will correspond to and be roughly equivalent to the Corda API version.
     targetPlatformVersion platformVersion.toInteger()
     minimumPlatformVersion platformVersion.toInteger()
@@ -61,7 +61,7 @@ repositories {
 
 // Declare dependencies for the modules we will use.
 // A cordaProvided declaration is required for anything that we use that the Corda API provides.
-// This is required to allow us to build CorDapp modules as OSGi bundles that CPI and CPB files are built on.
+// This is required to allow us to build CorDapp modules as OSGi bundles that CPI and CPB files are then built upon.
 dependencies {
     // Declare a "platform" so that we use the correct set of dependency versions for the version of the
     // Corda API specified.

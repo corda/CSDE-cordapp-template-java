@@ -34,8 +34,8 @@ def cordaBinDir= System.getProperty('user.home') + "/.corda/corda5"
 def cordaCliBinDir = System.getProperty('user.home') + "/.corda/cli"
 def cordaJDBCDir = cordaBinDir + "/jdbcDrivers"
 def signingCertAlias="gradle-plugin-default-key"
-// Get error if this is not a autotyped object
-// def signingCertFName = "$rootDir/config/gradle-plugin-default-key.pem"
+// You will receive an error if this is not a autotyped object.
+// def signingCertFName = "$rootDir/config/gradle-plugin-default-key.pem".
 def signingCertFName = rootDir.toString() + "/config/gradle-plugin-default-key.pem"
 def keystoreAlias = "my-signing-key"
 def keystoreFName = devEnvWorkspace + "/signingkeys.pfx"
@@ -136,7 +136,7 @@ tasks.register('createKeystore') {
                         "-storetype", "pkcs12",
                         "-validity", "4000"
             }
-            // Need to add the default signing key to the keystore
+            // Add the default signing key to the keystore.
             exec {
                 commandLine "${System.getProperty("java.home")}/bin/keytool", "-importcert",
                         "-keystore", keystoreFName,
@@ -172,7 +172,7 @@ tasks.register('buildCPI') {
         File srcDir
         srcDir = file('build/libs')
 
-        // Create a file collection using a closure
+        // Create a file collection using a closure.
         def collection = layout.files { srcDir.listFiles() }
         def cpbs = collection.filter { it.getName().endsWith(".cpb") }
 
@@ -225,7 +225,7 @@ tasks.register('listCPIs') {
     }
 }
 
-// Empty task, just acts as the Task user entry point task.
+// Empty task, this acts as the user entry point task.
 tasks.register('deployCordapp') {
     group = pluginGroupName
     dependsOn("createAndRegVNodes")

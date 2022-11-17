@@ -17,32 +17,32 @@ class MyFirstFlowTest {
     @Test
     @SuppressWarnings("unchecked")
     public void test_that_MyFirstFLow_returns_correct_message() {
-        // Instantiate an instance of the Simulator
+        // Instantiate an instance of the simulator.
         Simulator simulator = new Simulator();
 
-        // Create Alice's and Bob HoldingIDs
+        // Create Alice's and Bob HoldingIDs.
         HoldingIdentity aliceHoldingID = HoldingIdentity.Companion.create(aliceX500);
         HoldingIdentity bobHoldingID = HoldingIdentity.Companion.create(bobX500);
 
-        // Create Alice and Bob's virtual nodes, including the Class's of the flows which will be registered on each node.
-        // We don't assign Bob's virtual node to a variable because we don't need it for this particular test.
+        // Create Alice's and Bob's virtual nodes, including the classes of the flows which will be registered on each node.
+        // Don't assign Bob's virtual node to a value. You don't need it for this particular test.
         SimulatedVirtualNode aliceVN = simulator.createVirtualNode(aliceHoldingID, MyFirstFlow.class);
         simulator.createVirtualNode(bobHoldingID, MyFirstFlowResponder.class);
 
-        // Create an instance of the MyFirstFlowStartArgs which contains the request arguments for starting the flow
+        // Create an instance of the MyFirstFlowStartArgs which contains the request arguments for starting the flow.
         MyFirstFlowStartArgs myFirstFlowStartArgs = new MyFirstFlowStartArgs(bobX500);
 
-        // Create a requestData object
+        // Create a requestData object.
         RequestData requestData = RequestData.Companion.create(
-                "request no 1",        // A unique reference for the instance of the flow request
-                MyFirstFlow.class,              // The name of the flow class which is to be started
-                myFirstFlowStartArgs            // The object which contains the start arguments of the flow
+                "request no 1",        // A unique reference for the instance of the flow request.
+                MyFirstFlow.class,              // The name of the flow class which is to be started.
+                myFirstFlowStartArgs            // The object which contains the start arguments of the flow.
         );
 
-        // Call the Flow on Alice's virtual node and capture the response from the flow
+        // Call the flow on Alice's virtual node and capture the response.
         String flowResponse = aliceVN.callFlow(requestData);
 
-        // Check that the flow has returned the expected string
+        // Check that the flow has returned the expected string.
         assert(flowResponse.equals("Hello Alice, best wishes from Bob"));
     }
 }
