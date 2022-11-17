@@ -57,7 +57,7 @@ public class MyFirstFlow implements RPCStartableFlow {
         // Deserialize the Json requestBody into the MyfirstFlowStartArgs class using the JsonSerialisation service.
         MyFirstFlowStartArgs flowArgs = requestBody.getRequestBodyAs(jsonMarshallingService, MyFirstFlowStartArgs.class);
 
-        // Obtain the MemberX500Name of counterparty.
+        // Obtain the MemberX500Name of the counterparty.
         MemberX500Name otherMember = flowArgs.otherMember;
 
         // Get our identity from the MemberLookup service.
