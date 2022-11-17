@@ -29,7 +29,7 @@ public class MyFirstFlow implements RPCStartableFlow {
     public JsonMarshallingService jsonMarshallingService;
 
     // FlowMessaging establishes flow sessions between virtual nodes 
-    // that sends and receives payloads between them.
+    // that send and receive payloads between them.
     @CordaInject
     public FlowMessaging flowMessaging;
 
