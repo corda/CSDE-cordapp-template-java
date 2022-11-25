@@ -26,17 +26,17 @@ public class MyFirstFlow implements RPCStartableFlow {
 
     // JsonMarshallingService provides a Service for manipulating json
     @CordaInject
-    JsonMarshallingService jsonMarshallingService;
+    public JsonMarshallingService jsonMarshallingService;
 
     // FlowMessaging provides a service for establishing flow sessions between Virtual Nodes and
     // sending and receiving payloads between them
     @CordaInject
-    FlowMessaging flowMessaging;
+    public FlowMessaging flowMessaging;
 
     // MemberLookup provides a service for looking up information about members of the Virtual Network which
     // this CorDapp is operating in.
     @CordaInject
-    MemberLookup memberLookup;
+    public MemberLookup memberLookup;
 
     public MyFirstFlow() {}
 

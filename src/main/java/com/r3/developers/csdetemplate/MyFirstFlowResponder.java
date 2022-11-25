@@ -23,7 +23,7 @@ public class MyFirstFlowResponder implements ResponderFlow {
     // MemberLookup provides a service for looking up information about members of the Virtual Network which
     // this CorDapp is operating in.
     @CordaInject
-    MemberLookup memberLookup;
+    public MemberLookup memberLookup;
 
     public MyFirstFlowResponder() {}
 
