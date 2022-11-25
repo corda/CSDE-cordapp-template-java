@@ -45,36 +45,6 @@ cordapp {
     }
 }
 
-/*
-// Declare the set of Kotlin compiler options we need to build a CorDapp.
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
-    kotlinOptions {
-        allWarningsAsErrors = false
-
-        // Specify the version of Kotlin that we are that we will be developing. 
-        languageVersion = '1.7'
-        // Specify the Kotlin libraries that code is compatible with
-        apiVersion = '1.7'
-        // Note that we Need to use a version of Kotlin that will be compatible with the Corda API.
-        // Currently that is developed in Kotlin 1.7 so picking the same version ensures compatibility with that.
-
-        // Specify the version of Java to target.
-        jvmTarget = javaVersion
-
-        // Needed for reflection to work correctly.
-        javaParameters = true
-
-        // -Xjvm-default determines how Kotlin supports default methods.
-        // JetBrains currently recommends developers use -Xjvm-default=all
-        // https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-default/
-        freeCompilerArgs += [
-                "-Xjvm-default=all"
-        ]
-    }
-}
-
- */
-
 // Declare the set of Kotlin compiler options we need to build a CorDapp.
 tasks.withType(JavaCompile) {
 
@@ -84,53 +54,11 @@ tasks.withType(JavaCompile) {
     ]
 }
 
-
-
 repositories {
-    mavenLocal()
     // All dependencies are held in Maven Central
     mavenCentral()
-
-    // R3 Internal repositories
-    // Repository the provides kotlin-stdlib-jdk8-osgi created by R3.
-    // Final location to be decided.
     maven {
-        url = "$artifactoryContextUrl/corda-dependencies"
-    }
-    // Repository provides Corda 5 binaries that implement Corda-API.
-    // These will be made publicly available.
-    // Final location to be decided.
-    // Repository subject to change
-    maven {
-        url = "$artifactoryContextUrl/corda-os-maven"
-        credentials {
-            username = findProperty('cordaArtifactoryUsername') ?: System.getenv('CORDA_ARTIFACTORY_USERNAME')
-            password = findProperty('cordaArtifactoryPassword') ?: System.getenv('CORDA_ARTIFACTORY_PASSWORD')
-        }
-    }
-    // Provides the combined-worker Jars
-    // These will be made publicly available.
-    // Final location to be decided.
-    maven {
-        url = "$artifactoryContextUrl/corda-ent-maven-unstable-local"
-        credentials {
-            username = findProperty('cordaArtifactoryUsername') ?: System.getenv('CORDA_ARTIFACTORY_USERNAME')
-            password = findProperty('cordaArtifactoryPassword') ?: System.getenv('CORDA_ARTIFACTORY_PASSWORD')
-        }
-    }
-    maven {
-        url = "$artifactoryContextUrl/corda-ent-maven"
-        credentials {
-            username = findProperty('cordaArtifactoryUsername') ?: System.getenv('CORDA_ARTIFACTORY_USERNAME')
-            password = findProperty('cordaArtifactoryPassword') ?: System.getenv('CORDA_ARTIFACTORY_PASSWORD')
-        }
-    }
-    maven {
-        url = "$artifactoryContextUrl/engineering-tools-maven-unstable"
-        credentials {
-            username = findProperty('cordaArtifactoryUsername') ?: System.getenv('CORDA_ARTIFACTORY_USERNAME')
-            password = findProperty('cordaArtifactoryPassword') ?: System.getenv('CORDA_ARTIFACTORY_PASSWORD')
-        }
+        url = "$artifactoryContextUrl/"
     }
 }
 
