@@ -63,8 +63,8 @@ repositories {
 // A cordaProvided declaration is required for anything that we use that the Corda API provides.
 // This is required to allow us to build CorDapp modules as OSGi bundles that CPI and CPB files are then built upon.
 dependencies {
-    // Declare a "platform" so that we use the correct set of dependency versions for the version of the
-    // Corda API specified.
+    // Declare a "platform" to use the correct set of dependency versions for the version that the 
+    // Corda API specifies.
     cordaProvided platform("net.corda:corda-api:$cordaApiVersion")
 
     // If using transistive dependencies this will provide most of the Corda-API:
