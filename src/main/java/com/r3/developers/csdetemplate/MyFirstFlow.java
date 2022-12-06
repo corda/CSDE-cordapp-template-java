@@ -28,13 +28,13 @@ public class MyFirstFlow implements RPCStartableFlow {
     @CordaInject
     public JsonMarshallingService jsonMarshallingService;
 
-    // FlowMessaging establishes flow sessions between virtual nodes 
+    // FlowMessaging provides a service that establishes flow sessions between virtual nodes 
     // that send and receive payloads between them.
     @CordaInject
     public FlowMessaging flowMessaging;
 
-    // MemberLookup looks for information about members of the virtual network 
-    // which this CorDapp operates in. 
+     // MemberLookup provides a service for looking up information about members of the virtual network which
+     // this CorDapp operates in.
     @CordaInject
     public MemberLookup memberLookup;
 
@@ -79,7 +79,7 @@ public class MyFirstFlow implements RPCStartableFlow {
         // Receive a response from the responder flow.
         Message response = session.receive(Message.class);
 
-        // The return value of a RPCStartableFlow must always be a string. This string will pass
+        // The return value of a RPCStartableFlow must always be a String. This will be passed
         // back as the REST RPC response when the status of the flow is queried on Corda, or as the return
         // value from the flow when testing using the simulator.
         return response.message;
