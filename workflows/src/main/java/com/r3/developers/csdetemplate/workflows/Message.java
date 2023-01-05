@@ -1,4 +1,4 @@
-package com.r3.developers.csdetemplate;
+package com.r3.developers.csdetemplate.workflows;
 
 import net.corda.v5.base.annotations.CordaSerializable;
 import net.corda.v5.base.types.MemberX500Name;
