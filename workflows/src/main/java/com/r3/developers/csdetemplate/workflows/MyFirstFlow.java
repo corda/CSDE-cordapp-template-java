@@ -1,4 +1,4 @@
-package com.r3.developers.csdetemplate;
+package com.r3.developers.csdetemplate.workflows;
 
 import net.corda.v5.application.flows.*;
 import net.corda.v5.application.marshalling.JsonMarshallingService;
@@ -91,7 +91,7 @@ public class MyFirstFlow implements RPCStartableFlow {
 RequestBody for triggering the flow via http-rpc:
 {
     "clientRequestId": "r1",
-    "flowClassName": "com.r3.developers.csdetemplate.MyFirstFlow",
+    "flowClassName": "com.r3.developers.csdetemplate.workflows.MyFirstFlow",
     "requestData": {
         "otherMember":"CN=Bob, OU=Test Dept, O=R3, L=London, C=GB"
         }

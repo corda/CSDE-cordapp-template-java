@@ -1,4 +1,4 @@
-package com.r3.developers.csdetemplate;
+package com.r3.developers.csdetemplate.workflows;
 
 import net.corda.v5.application.flows.CordaInject;
 import net.corda.v5.application.flows.InitiatedBy;
