@@ -47,7 +47,8 @@ publishing {
             artifactId "corda-CSDE-java-sample"
             groupId project.group
             artifact jar
-        }
     }
+
+   }
 }
 
