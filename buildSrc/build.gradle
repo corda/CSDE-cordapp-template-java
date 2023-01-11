@@ -6,9 +6,6 @@ plugins {
 
 repositories {
     mavenCentral()
-    maven {
-        url = "$artifactoryContextUrl/"
-    }
 }
 
 dependencies {

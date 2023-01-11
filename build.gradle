@@ -30,9 +30,6 @@ allprojects {
     repositories {
         // All dependencies are held in Maven Central
         mavenCentral()
-        maven {
-            url = "$artifactoryContextUrl/"
-        }
     }
 
     tasks.withType(Test).configureEach {

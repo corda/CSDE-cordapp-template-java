@@ -2,9 +2,7 @@ pluginManagement {
     // Declare the repositories where plugins are stored.
     repositories {
         gradlePluginPortal()
-        maven {
-            url = "$artifactoryContextUrl/"
-        }
+        mavenCentral()
     }
 
     //  The plugin dependencies with versions of the plugins congruent with the specified CorDapp plugin version,
