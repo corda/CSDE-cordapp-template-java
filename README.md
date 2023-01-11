@@ -1,5 +1,8 @@
 # CSDE-cordapp-template-java
 
+## Note: This cut of CSDE is work in progress and has not been released yet, hence may not function as expected.
+
+
 To help make the process of prototyping Cordapps on Developer Preview 2 more straight forward we have developed the Cordapp Standard Development Environment (CSDE). 
 
 The CSDE is obtained by cloning this CSDE-Cordapp-Template-java to your local machine. The CSDE provides:
