@@ -1,4 +1,4 @@
-package com.r3.developers.csdetemplate.workflows;
+package com.r3.developers.csdetemplate.flowexample.workflows;
 
 import net.corda.v5.application.flows.*;
 import net.corda.v5.application.marshalling.JsonMarshallingService;

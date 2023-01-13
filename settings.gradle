@@ -22,6 +22,3 @@ rootProject.name = 'csde-cordapp-template-java'
 include ':workflows'
 include ':contracts'
 
-
-
-
