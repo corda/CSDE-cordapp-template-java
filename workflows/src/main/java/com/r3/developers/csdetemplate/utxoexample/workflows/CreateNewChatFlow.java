@@ -75,6 +75,10 @@ public class CreateNewChatFlow implements RPCStartableFlow {
             );
 
             NotaryInfo notary = notaryLookup.getNotaryServices().iterator().next();
+            /*
+            // Lambda have problems see https://r3-cev.atlassian.net/browse/CORE-8983
+
+            // Lambda here.
             Predicate<MemberInfo> myPred = memberInfo -> Objects.equals(
                     memberInfo.getMemberProvidedContext().get("corda.notary.service.name"),
                     notary.getName().toString()
@@ -84,6 +88,23 @@ public class CreateNewChatFlow implements RPCStartableFlow {
             MemberInfo thing = lmi.stream().filter(myPred).iterator().next();
             PublicKey notaryKey = thing.getLedgerKeys().get(0);
 
+             */
+
+            PublicKey notaryKey = null;
+            for(MemberInfo info: memberLookup.lookup()){
+                if(Objects.equals(info.getMemberProvidedContext().get("corda.notary.service.name"), notary.getName().toString()) ) {
+                    notaryKey = info.getLedgerKeys().get(0);
+                    break;
+                }
+            }
+            if(notary == null) {
+                throw new NullPointerException("No notary found");
+            }
+
+            log.info("notary.getName()=" + notary.getName());
+            log.info("chatState = " + chatState);
+            log.info("chatState.getParticipants().size() = " + chatState.getParticipants().size());
+
             UtxoTransactionBuilder txBuilder = ledgerService.getTransactionBuilder()
                     .setNotary(new Party(notary.getName(), notaryKey))
                     .setTimeWindowBetween(Instant.now(), Instant.now().plusMillis(Duration.ofDays(1).toMillis()))
@@ -91,9 +112,13 @@ public class CreateNewChatFlow implements RPCStartableFlow {
                     .addCommand(new ChatContract.Create())
                     .addSignatories(chatState.getParticipants());
 
+
+            log.info("Before UtxoSignedTransaction signedTransaction = txBuilder.toSignedTransaction(myInfo.getLedgerKeys().get(0));");
+            log.info("myInfo.getLedgerKeys().size() = " + myInfo.getLedgerKeys().size());
+            log.info("myInfo.getLedgerKeys().get(0) = " + myInfo.getLedgerKeys().get(0));
             @SuppressWarnings("DEPRECATION")
             UtxoSignedTransaction signedTransaction = txBuilder.toSignedTransaction(myInfo.getLedgerKeys().get(0));
-
+            log.info("After UtxoSignedTransaction signedTransaction = txBuilder.toSignedTransaction(myInfo.getLedgerKeys().get(0));");
             return flowEngine.subFlow(new AppendChatSubFlow(signedTransaction, otherMember.getName()));
         }
         catch (Exception e) {

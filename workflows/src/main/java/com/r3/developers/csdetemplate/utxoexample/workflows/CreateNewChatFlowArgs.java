@@ -1,8 +1,14 @@
 package com.r3.developers.csdetemplate.utxoexample.workflows;
 
+import net.corda.v5.base.annotations.ConstructorForDeserialization;
+import net.corda.v5.base.annotations.CordaSerializable;
+
+@CordaSerializable
 public class CreateNewChatFlowArgs{
 
     public CreateNewChatFlowArgs() {}
+
+    @ConstructorForDeserialization
     public CreateNewChatFlowArgs(String chatName, String message, String otherMember) {
         this.chatName = chatName;
         this.message = message;
@@ -33,9 +39,7 @@ public class CreateNewChatFlowArgs{
         this.otherMember = otherMember;
     }
 
-    private String chatName;
-    private String message;
-
-
-    private String otherMember;
+    public String chatName;
+    public String message;
+    public String otherMember;
 }

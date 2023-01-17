@@ -1,9 +1,15 @@
 package com.r3.developers.csdetemplate.utxoexample.workflows;
 
+import net.corda.v5.base.annotations.ConstructorForDeserialization;
+import net.corda.v5.base.annotations.CordaSerializable;
+
 import java.util.UUID;
 
+@CordaSerializable
 public class ChatStateResults {
     public ChatStateResults() {}
+
+    @ConstructorForDeserialization
     public ChatStateResults(UUID id, String chatName, String messageFromName, String message) {
         this.id = id;
         this.chatName = chatName;
@@ -43,9 +49,9 @@ public class ChatStateResults {
         this.message = message;
     }
 
-    private UUID id;
-    private String chatName;
-    private String messageFromName;
-    private String message;
+    public UUID id;
+    public String chatName;
+    public String messageFromName;
+    public String message;
 
 }

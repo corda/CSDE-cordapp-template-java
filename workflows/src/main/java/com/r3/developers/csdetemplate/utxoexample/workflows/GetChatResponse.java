@@ -1,7 +1,13 @@
 package com.r3.developers.csdetemplate.utxoexample.workflows;
 
+import net.corda.v5.base.annotations.ConstructorForDeserialization;
+import net.corda.v5.base.annotations.CordaSerializable;
+
+@CordaSerializable
 public class GetChatResponse {
     public GetChatResponse() {}
+
+    @ConstructorForDeserialization
     public GetChatResponse(String messageFrom, String message) {
         this.messageFrom = messageFrom;
         this.message = message;
@@ -23,6 +29,6 @@ public class GetChatResponse {
         this.message = message;
     }
 
-    private String messageFrom;
-    private String message;
+    public String messageFrom;
+    public String message;
 }

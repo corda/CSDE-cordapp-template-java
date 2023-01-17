@@ -1,6 +1,8 @@
 package com.r3.developers.csdetemplate.utxoexample.states;
 
 import com.r3.developers.csdetemplate.utxoexample.contracts.ChatContract;
+import net.corda.v5.base.annotations.ConstructorForDeserialization;
+import net.corda.v5.base.annotations.CordaSerializable;
 import net.corda.v5.base.types.MemberX500Name;
 import net.corda.v5.ledger.utxo.BelongsToContract;
 import net.corda.v5.ledger.utxo.ContractState;
@@ -20,14 +22,15 @@ data class ChatState(
 
         fun updateMessage(messageFrom: MemberX500Name, message: String) = copy(messageFrom = messageFrom, message = message)
         }
-
 */
 
+@CordaSerializable
 @BelongsToContract(ChatContract.class)
 public class ChatState implements ContractState {
     public ChatState() {
     }
 
+    @ConstructorForDeserialization
     public ChatState(UUID id,
              String chatName,
              MemberX500Name messageFrom,
@@ -81,6 +84,10 @@ public class ChatState implements ContractState {
         return message;
     }
 
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     @NotNull
     @Override
     public List<PublicKey> getParticipants() {
@@ -91,13 +98,23 @@ public class ChatState implements ContractState {
         this.participants = participants;
     }
 
-    private UUID id;
-    private String chatName;
-    private MemberX500Name messageFrom;
-    private String message;
-    List<PublicKey> participants;
+    public UUID id;
+    public String chatName;
+    public MemberX500Name messageFrom;
+    public String message;
+    public List<PublicKey> participants;
 
     public ChatState updateMessage(MemberX500Name name, String message) {
         return new ChatState(chatName, name, message, participants);
+    }
+
+    @Override
+    public String toString() {
+        return ChatState.class.getName() +
+                "(id=" + id +
+                ", chatName=" + chatName +
+                ", messageFrom=" + messageFrom +
+                ", participants=" + participants +
+                ")";
     }
 }

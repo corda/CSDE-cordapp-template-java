@@ -4,8 +4,11 @@ import com.r3.developers.csdetemplate.utxoexample.states.ChatState;
 import net.corda.v5.application.flows.*;
 import net.corda.v5.application.messaging.FlowMessaging;
 import net.corda.v5.application.messaging.FlowSession;
+import net.corda.v5.base.annotations.ConstructorForDeserialization;
+import net.corda.v5.base.annotations.CordaSerializable;
 import net.corda.v5.base.annotations.Suspendable;
 import net.corda.v5.base.types.MemberX500Name;
+import net.corda.v5.crypto.SecureHash;
 import net.corda.v5.ledger.utxo.UtxoLedgerService;
 import net.corda.v5.ledger.utxo.transaction.UtxoSignedTransaction;
 import org.slf4j.Logger;
@@ -17,13 +20,12 @@ import java.util.List;
 @InitiatingFlow(protocol = "append-chat-protocol")
 public class AppendChatSubFlow implements SubFlow<String> {
 
-    public AppendChatSubFlow() {}
     public AppendChatSubFlow(UtxoSignedTransaction signedTransaction, MemberX500Name otherMember) {
         this.signedTransaction = signedTransaction;
         this.otherMember = otherMember;
     }
 
-    private final Logger log = LoggerFactory.getLogger(AppendChatSubFlow.class);
+    private final static Logger log = LoggerFactory.getLogger(AppendChatSubFlow.class);
 
     @CordaInject
     public UtxoLedgerService ledgerService;
@@ -36,24 +38,46 @@ public class AppendChatSubFlow implements SubFlow<String> {
     public String call() {
 
         log.info("AppendChatFlow.call() called");
-
+        log.info("otherMember = " + otherMember);
         FlowSession session = flowMessaging.initiateFlow(otherMember);
 
         String retVal;
         try {
+            List<FlowSession> sessionsList = Arrays.asList(session);
+            log.info("sessionList.size()=" + sessionsList.size());
+
             UtxoSignedTransaction finalizedSignedTransaction = ledgerService.finalize(
                     signedTransaction,
-                    List.of(session)
+                    sessionsList
             );
+
             retVal = finalizedSignedTransaction.getId().toString();
+            //retVal = "The returned";
             log.info("Success! Response: " + retVal);
         } catch (Exception e) {
             log.warn("Finality failed", e);
             retVal = "Finality failed, " + e.getMessage();
         }
+        log.info("AppendChatSubFlow call returns=" + retVal);
         return retVal;
     }
 
-    private UtxoSignedTransaction signedTransaction;
-    private MemberX500Name otherMember;
+    public UtxoSignedTransaction getSignedTransaction() {
+        return signedTransaction;
+    }
+
+    public void setSignedTransaction(UtxoSignedTransaction signedTransaction) {
+        this.signedTransaction = signedTransaction;
+    }
+
+    public MemberX500Name getOtherMember() {
+        return otherMember;
+    }
+
+    public void setOtherMember(MemberX500Name otherMember) {
+        this.otherMember = otherMember;
+    }
+
+    public UtxoSignedTransaction signedTransaction;
+    public MemberX500Name otherMember;
 }

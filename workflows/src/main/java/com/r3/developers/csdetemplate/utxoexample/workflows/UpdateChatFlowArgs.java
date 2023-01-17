@@ -1,10 +1,14 @@
 package com.r3.developers.csdetemplate.utxoexample.workflows;
 
-import java.util.UUID;
+import net.corda.v5.base.annotations.ConstructorForDeserialization;
+import net.corda.v5.base.annotations.CordaSerializable;
 
+import java.util.UUID;
+@CordaSerializable
 public class UpdateChatFlowArgs {
     public UpdateChatFlowArgs() {}
 
+    @ConstructorForDeserialization
     public UpdateChatFlowArgs(UUID id, String message) {
         this.id = id;
         this.message = message;
@@ -26,7 +30,7 @@ public class UpdateChatFlowArgs {
         this.message = message;
     }
 
-    private UUID id;
-    private String message;
+    public UUID id;
+    public String message;
 
 }
