@@ -13,7 +13,6 @@ public final class CorDappHelpers {
         Collection<T> results = collection.stream().filter(filterFn).collect(Collectors.toList());
         if(results.size() != 1){
             throw new IllegalArgumentException(exceptionMsg);
-            //throw new Exception(exceptionMsg);
         }
         return results.iterator().next();
     }

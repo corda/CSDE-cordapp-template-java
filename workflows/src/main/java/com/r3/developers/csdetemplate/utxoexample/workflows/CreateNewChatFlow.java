@@ -32,7 +32,7 @@ import static java.util.Objects.*;
 @InitiatingFlow(protocol = "create-chat-protocol")
 public class CreateNewChatFlow implements RPCStartableFlow {
 
-    private final Logger log = LoggerFactory.getLogger(CreateNewChatFlow.class);
+    private final static Logger log = LoggerFactory.getLogger(CreateNewChatFlow.class);
 
     @CordaInject
     public JsonMarshallingService jsonMarshallingService;
@@ -90,6 +90,8 @@ public class CreateNewChatFlow implements RPCStartableFlow {
 
              */
 
+            // Quasar checkpointing has a bugs handling lambdas in flows.
+            // This is being worked upon.
             PublicKey notaryKey = null;
             for(MemberInfo info: memberLookup.lookup()){
                 if(Objects.equals(info.getMemberProvidedContext().get("corda.notary.service.name"), notary.getName().toString()) ) {

@@ -20,25 +20,24 @@ import static com.r3.developers.csdetemplate.utxoexample.workflows.ResponderVali
 import static com.r3.developers.csdetemplate.utxoexample.workflows.ResponderValidationHelpers.checkMessageFromMatchesCounterparty;
 
 @InitiatedBy(protocol = "append-chat-protocol")
-class AppendChatResponderFlow implements ResponderFlow {
+public class AppendChatResponderFlow implements ResponderFlow {
 
 private final Logger log = LoggerFactory.getLogger(AppendChatResponderFlow.class);
 
 @CordaInject
 public UtxoLedgerService utxoLedgerService;
 
-    @CordaSerializable
+    /*
     static public class TxValidator implements UtxoTransactionValidator {
         private final Logger log = LoggerFactory.getLogger(AppendChatResponderFlow.class);
 
-        @ConstructorForDeserialization
         public TxValidator(FlowSession session) {
             this.session = session;
         }
 
         @Override
         public void checkTransaction(@NotNull UtxoLedgerTransaction ledgerTransaction) {
-            ChatState state = (ChatState) ledgerTransaction.getInputContractStates().get(0);
+            ChatState state = (ChatState) ledgerTransaction.getOutputContractStates().get(0);
             if (checkForBannedWords(state.getMessage()) || !checkMessageFromMatchesCounterparty(state, session.getCounterparty())) {
                 throw new IllegalStateException("Failed verification");
             }
@@ -48,12 +47,27 @@ public UtxoLedgerService utxoLedgerService;
         private FlowSession session;
     }
 
+     */
+
     @Suspendable
     @Override
     public void call(@NotNull FlowSession session) {
-
+        log.info("AppendChatResponderFlow.call() called");
         try {
-            TxValidator txValidator = new TxValidator(session);
+            //TxValidator txValidator = new TxValidator(session);
+            UtxoTransactionValidator txValidator = ledgerTransaction -> {
+                ChatState state = (ChatState) ledgerTransaction.getOutputContractStates().get(0);
+                log.info("ChatState.getMessage() = " + state.getMessage());
+                log.info("ledgerTransaction.getOutputContractStates().size() = " + ledgerTransaction.getOutputContractStates().size()) ;
+                log.info("session.getCounterParty()=" + session.getCounterparty());
+                log.info("state.getMessageFrom()=" + state.getMessageFrom());
+                log.info("checkForBannedWords(state.getMessage) = " + checkForBannedWords(state.getMessage()));
+                log.info("checkMessageFromMatchesCounterparty(state, session.getCounterparty())=" + checkMessageFromMatchesCounterparty(state, session.getCounterparty()));
+                if (checkForBannedWords(state.getMessage()) || !checkMessageFromMatchesCounterparty(state, session.getCounterparty())) {
+                    throw new IllegalStateException("Failed verification");
+                }
+                log.info("Verified the transaction - " + ledgerTransaction.getId());
+            };
 
             // This is not a problem.
             UtxoSignedTransaction finalizedSignedTransaction = utxoLedgerService.receiveFinality(session, txValidator);

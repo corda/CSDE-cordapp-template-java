@@ -52,7 +52,6 @@ public class AppendChatSubFlow implements SubFlow<String> {
             );
 
             retVal = finalizedSignedTransaction.getId().toString();
-            //retVal = "The returned";
             log.info("Success! Response: " + retVal);
         } catch (Exception e) {
             log.warn("Finality failed", e);

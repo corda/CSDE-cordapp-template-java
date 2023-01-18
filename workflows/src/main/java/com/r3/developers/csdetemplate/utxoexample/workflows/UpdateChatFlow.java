@@ -108,3 +108,14 @@ public class UpdateChatFlow implements RPCStartableFlow {
     }
 }
 
+/*
+RequestBody for triggering the flow via http-rpc:
+{
+    "clientRequestId": "update-1",
+    "flowClassName": "com.r3.developers.csdetemplate.utxoexample.workflows.UpdateChatFlow",
+    "requestData": {
+        "id":" ** chat id **",
+        "message": "How are you today?"
+        }
+}
+ */

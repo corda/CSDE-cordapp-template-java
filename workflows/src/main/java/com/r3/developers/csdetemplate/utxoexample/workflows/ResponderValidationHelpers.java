@@ -17,7 +17,7 @@ public final class ResponderValidationHelpers {
 
     @Suspendable
     public static boolean checkMessageFromMatchesCounterparty(ChatState state, MemberX500Name otherMember) {
-        return state.getMessageFrom() == otherMember;
+        return state.getMessageFrom().equals(otherMember);
     }
 
     // This class just introduces a scope for some helper functions and should not be instantiated.
