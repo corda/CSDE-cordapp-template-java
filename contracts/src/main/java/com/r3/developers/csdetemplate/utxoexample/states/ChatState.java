@@ -11,19 +11,6 @@ import org.jetbrains.annotations.NotNull;
 import java.security.PublicKey;
 import java.util.*;
 
-/*
-@BelongsToContract(ChatContract::class)
-data class ChatState(
-        val id : UUID = UUID.randomUUID(),
-        val chatName: String,
-        val messageFrom: MemberX500Name,
-        val message: String,
-        override val participants: List<PublicKey>) : ContractState {
-
-        fun updateMessage(messageFrom: MemberX500Name, message: String) = copy(messageFrom = messageFrom, message = message)
-        }
-*/
-
 @CordaSerializable
 @BelongsToContract(ChatContract.class)
 public class ChatState implements ContractState {
@@ -105,7 +92,7 @@ public class ChatState implements ContractState {
     public List<PublicKey> participants;
 
     public ChatState updateMessage(MemberX500Name name, String message) {
-        return new ChatState(chatName, name, message, participants);
+        return new ChatState(id, chatName, name, message, participants);
     }
 
     @Override

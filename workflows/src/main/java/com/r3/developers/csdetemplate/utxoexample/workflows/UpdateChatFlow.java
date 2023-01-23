@@ -60,10 +60,11 @@ public class UpdateChatFlow implements RPCStartableFlow {
         try {
              UpdateChatFlowArgs flowArgs = requestBody.getRequestBodyAs(jsonMarshallingService, UpdateChatFlowArgs.class);
 
-            // look up state (this is very inefficient)
+            // Look up state (this is very inefficient)
+            // Can get the error when you forget to update the ID.
             StateAndRef<ChatState> stateAndRef = findAndExpectExactlyOne(
                     ledgerService.findUnconsumedStatesByType(ChatState.class),
-                    sAndR -> sAndR.getState().getContractState().getId() == flowArgs.getId(),
+                    sAndR -> sAndR.getState().getContractState().getId().equals(flowArgs.getId()),
                     "Multiple or zero Chat states with id " + flowArgs.getId() + " found"
             );
 
@@ -74,15 +75,11 @@ public class UpdateChatFlow implements RPCStartableFlow {
                     it -> requireNonNull(memberLookup.lookup(it), "Member not found from Key")
             ).collect(Collectors.toList());
 
-
-            // Now we want to check that there is only
-            /*
-            val otherMember = (members - myInfo).singleOrNull()
-                    ?: throw Exception("Should be only one participant other than the initiator")
-
-             */
-            // NEED TO ADD CHECKS
+            // Now we want to check that there is only one member other than ourselves in the chat.
             members.remove(myInfo);
+            if(members.size() != 1) {
+                throw new IllegalArgumentException("Should be only one participant other than the initiator");
+            }
             MemberInfo otherMember = members.get(0);
 
             // This needs to be a deep copy?
@@ -114,7 +111,7 @@ RequestBody for triggering the flow via http-rpc:
     "clientRequestId": "update-1",
     "flowClassName": "com.r3.developers.csdetemplate.utxoexample.workflows.UpdateChatFlow",
     "requestData": {
-        "id":" ** chat id **",
+        "id":" ** fill in id **",
         "message": "How are you today?"
         }
 }

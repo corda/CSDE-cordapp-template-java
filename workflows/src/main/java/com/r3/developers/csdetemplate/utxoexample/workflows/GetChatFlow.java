@@ -36,8 +36,11 @@ public class GetChatFlow implements RPCStartableFlow {
         GetChatFlowArgs flowArgs = requestBody.getRequestBodyAs(jsonMarshallingService, GetChatFlowArgs.class);
         List<StateAndRef<ChatState>> stateAndRefs = ledgerService.findUnconsumedStatesByType(ChatState.class);
 
+        log.info("GetChatFlow Number of stateAndRefs = " + stateAndRefs.size());
+        log.info("GetChatFlow stateAndRefs = " + stateAndRefs);
+
         StateAndRef<ChatState> state = findAndExpectExactlyOne(stateAndRefs,
-                stateAndRef -> stateAndRef.getState().getContractState().getId() == flowArgs.getId(),
+                stateAndRef -> stateAndRef.getState().getContractState().getId().equals(flowArgs.getId()),
                 "did not find an unique ChatState"
         );
 
