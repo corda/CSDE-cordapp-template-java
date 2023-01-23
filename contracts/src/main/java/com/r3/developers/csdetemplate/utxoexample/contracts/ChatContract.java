@@ -36,23 +36,6 @@ public class ChatContract implements Contract {
         else {
             throw new IllegalArgumentException("Unsupported command");
         }
-
-        /*
-        // This seems to be make Intellij unhappy.
-        switch(command.getClass()) {
-            case Create.class:
-                requireThat(transaction.getInputContractStates().isEmpty(), "When command is Create there should be no input state");
-                requireThat(transaction.getOutputContractStates().size() == 1, "When command is Create there should be one and only one output state");
-                break;
-            case Update.class:
-                requireThat(transaction.getInputContractStates().size() == 1, "When command is Update there should be one and only one input state");
-                requireThat(transaction.getOutputContractStates().size() == 1, "When command is Update there should be one and only one output state");
-                break;
-            default:
-               throw new IllegalArgumentException("Unsupported command");
-        }
-
-         */
     }
 
     private void requireThat(boolean asserted, String errorMessage) throws IllegalArgumentException {

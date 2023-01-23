@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 public class ListChatsFlow implements RPCStartableFlow{
 
-    private final Logger log = LoggerFactory.getLogger(ListChatsFlow.class);
+    private final static Logger log = LoggerFactory.getLogger(ListChatsFlow.class);
 
     @CordaInject
     public JsonMarshallingService jsonMarshallingService;

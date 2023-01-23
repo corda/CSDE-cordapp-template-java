@@ -5,11 +5,8 @@ import net.corda.v5.application.flows.CordaInject;
 import net.corda.v5.application.flows.InitiatedBy;
 import net.corda.v5.application.flows.ResponderFlow;
 import net.corda.v5.application.messaging.FlowSession;
-import net.corda.v5.base.annotations.ConstructorForDeserialization;
-import net.corda.v5.base.annotations.CordaSerializable;
 import net.corda.v5.base.annotations.Suspendable;
 import net.corda.v5.ledger.utxo.UtxoLedgerService;
-import net.corda.v5.ledger.utxo.transaction.UtxoLedgerTransaction;
 import net.corda.v5.ledger.utxo.transaction.UtxoSignedTransaction;
 import net.corda.v5.ledger.utxo.transaction.UtxoTransactionValidator;
 import org.jetbrains.annotations.NotNull;
@@ -21,48 +18,18 @@ import static com.r3.developers.csdetemplate.utxoexample.workflows.ResponderVali
 
 @InitiatedBy(protocol = "append-chat-protocol")
 public class AppendChatResponderFlow implements ResponderFlow {
+    private final static Logger log = LoggerFactory.getLogger(AppendChatResponderFlow.class);
 
-private final Logger log = LoggerFactory.getLogger(AppendChatResponderFlow.class);
-
-@CordaInject
-public UtxoLedgerService utxoLedgerService;
-
-    /*
-    static public class TxValidator implements UtxoTransactionValidator {
-        private final Logger log = LoggerFactory.getLogger(AppendChatResponderFlow.class);
-
-        public TxValidator(FlowSession session) {
-            this.session = session;
-        }
-
-        @Override
-        public void checkTransaction(@NotNull UtxoLedgerTransaction ledgerTransaction) {
-            ChatState state = (ChatState) ledgerTransaction.getOutputContractStates().get(0);
-            if (checkForBannedWords(state.getMessage()) || !checkMessageFromMatchesCounterparty(state, session.getCounterparty())) {
-                throw new IllegalStateException("Failed verification");
-            }
-            log.info("Verified the transaction - " + ledgerTransaction.getId());
-
-        }
-        private FlowSession session;
-    }
-
-     */
+    @CordaInject
+    public UtxoLedgerService utxoLedgerService;
 
     @Suspendable
     @Override
     public void call(@NotNull FlowSession session) {
         log.info("AppendChatResponderFlow.call() called");
         try {
-            //TxValidator txValidator = new TxValidator(session);
             UtxoTransactionValidator txValidator = ledgerTransaction -> {
                 ChatState state = (ChatState) ledgerTransaction.getOutputContractStates().get(0);
-                log.info("ChatState.getMessage() = " + state.getMessage());
-                log.info("ledgerTransaction.getOutputContractStates().size() = " + ledgerTransaction.getOutputContractStates().size()) ;
-                log.info("session.getCounterParty()=" + session.getCounterparty());
-                log.info("state.getMessageFrom()=" + state.getMessageFrom());
-                log.info("checkForBannedWords(state.getMessage) = " + checkForBannedWords(state.getMessage()));
-                log.info("checkMessageFromMatchesCounterparty(state, session.getCounterparty())=" + checkMessageFromMatchesCounterparty(state, session.getCounterparty()));
                 if (checkForBannedWords(state.getMessage()) || !checkMessageFromMatchesCounterparty(state, session.getCounterparty())) {
                     throw new IllegalStateException("Failed verification");
                 }

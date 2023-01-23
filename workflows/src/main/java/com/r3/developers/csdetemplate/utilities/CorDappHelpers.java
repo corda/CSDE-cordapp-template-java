@@ -1,4 +1,4 @@
-package com.r3.developers.csdetemplate.utxoexample.workflows.utilities;
+package com.r3.developers.csdetemplate.utilities;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -8,16 +8,16 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public final class CorDappHelpers {
-    public static <T> T findAndExpectExactlyOne(Collection<T> collection, Predicate<? super T> filterFn, String exceptionMsg) throws IllegalArgumentException
+    public static <T> T findAndExpectExactlyOne(Collection<T> collection, Predicate<? super T> filterFn, String exceptionMsg)
     {
         Collection<T> results = collection.stream().filter(filterFn).collect(Collectors.toList());
         if(results.size() != 1){
-            throw new IllegalArgumentException(exceptionMsg);
+            throw new RuntimeException(exceptionMsg);
         }
         return results.iterator().next();
     }
 
-    public static <T> T findAndExpectExactlyOne(Collection<T> collection, String exceptionMsg) throws IllegalArgumentException {
+    public static <T> T findAndExpectExactlyOne(Collection<T> collection, String exceptionMsg) {
         return findAndExpectExactlyOne(collection, e -> true, exceptionMsg);
     }
 }

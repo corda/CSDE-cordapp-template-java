@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 public class MyFirstFlowResponder implements ResponderFlow {
 
     // Log messages from the flows for debugging.
-    private final Logger log = LoggerFactory.getLogger(MyFirstFlowResponder.class);
+    private final static Logger log = LoggerFactory.getLogger(MyFirstFlowResponder.class);
 
     // MemberLookup looks for information about members of the virtual network which 
     // this CorDapp operates in. 

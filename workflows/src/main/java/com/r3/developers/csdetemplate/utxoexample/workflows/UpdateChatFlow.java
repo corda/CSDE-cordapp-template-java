@@ -25,12 +25,12 @@ import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.r3.developers.csdetemplate.utxoexample.workflows.utilities.CorDappHelpers.findAndExpectExactlyOne;
+import static com.r3.developers.csdetemplate.utilities.CorDappHelpers.findAndExpectExactlyOne;
 import static java.util.Objects.*;
 
 public class UpdateChatFlow implements RPCStartableFlow {
 
-    private final Logger log = LoggerFactory.getLogger(UpdateChatFlow.class);
+    private final static Logger log = LoggerFactory.getLogger(UpdateChatFlow.class);
 
     @CordaInject
     public JsonMarshallingService jsonMarshallingService;
@@ -53,7 +53,7 @@ public class UpdateChatFlow implements RPCStartableFlow {
     @NotNull
     @Suspendable
     @Override
-    public String call(RPCRequestData requestBody) throws IllegalArgumentException{
+    public String call(RPCRequestData requestBody) {
 
         log.info("UpdateNewChatFlow.call() called");
 
@@ -61,7 +61,6 @@ public class UpdateChatFlow implements RPCStartableFlow {
              UpdateChatFlowArgs flowArgs = requestBody.getRequestBodyAs(jsonMarshallingService, UpdateChatFlowArgs.class);
 
             // Look up state (this is very inefficient)
-            // Can get the error when you forget to update the ID.
             StateAndRef<ChatState> stateAndRef = findAndExpectExactlyOne(
                     ledgerService.findUnconsumedStatesByType(ChatState.class),
                     sAndR -> sAndR.getState().getContractState().getId().equals(flowArgs.getId()),
@@ -78,11 +77,10 @@ public class UpdateChatFlow implements RPCStartableFlow {
             // Now we want to check that there is only one member other than ourselves in the chat.
             members.remove(myInfo);
             if(members.size() != 1) {
-                throw new IllegalArgumentException("Should be only one participant other than the initiator");
+                throw new RuntimeException("Should be only one participant other than the initiator");
             }
             MemberInfo otherMember = members.get(0);
 
-            // This needs to be a deep copy?
             ChatState newChatState = state.updateMessage(myInfo.getName(), flowArgs.getMessage());
 
             UtxoTransactionBuilder txBuilder = ledgerService.getTransactionBuilder()
@@ -97,7 +95,6 @@ public class UpdateChatFlow implements RPCStartableFlow {
             UtxoSignedTransaction signedTransaction = txBuilder.toSignedTransaction(myInfo.getLedgerKeys().get(0));
 
             return flowEngine.subFlow(new AppendChatSubFlow(signedTransaction, otherMember.getName()));
-
         } catch (Exception e) {
             log.warn("Failed to process utxo flow for request body '$requestBody' because:'${e.message}'");
             throw e;

@@ -17,6 +17,7 @@ public class ChatState implements ContractState {
     public ChatState() {
     }
 
+    // Allows serialisation and to use a specified UUID.
     @ConstructorForDeserialization
     public ChatState(UUID id,
              String chatName,
@@ -31,6 +32,7 @@ public class ChatState implements ContractState {
         this.participants = participants;
     }
 
+    // Convenience constructor for initial ChatState objects that need a new UUID generated.
     public ChatState(String chatName,
               MemberX500Name messageFrom,
               String message,
@@ -101,6 +103,7 @@ public class ChatState implements ContractState {
                 "(id=" + id +
                 ", chatName=" + chatName +
                 ", messageFrom=" + messageFrom +
+                ", message=" + message +
                 ", participants=" + participants +
                 ")";
     }

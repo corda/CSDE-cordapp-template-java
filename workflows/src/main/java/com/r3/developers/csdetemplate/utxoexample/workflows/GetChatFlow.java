@@ -16,12 +16,12 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-import static com.r3.developers.csdetemplate.utxoexample.workflows.utilities.CorDappHelpers.findAndExpectExactlyOne;
+import static com.r3.developers.csdetemplate.utilities.CorDappHelpers.findAndExpectExactlyOne;
 import static java.util.Objects.*;
 
 public class GetChatFlow implements RPCStartableFlow {
 
-    private final Logger log = LoggerFactory.getLogger(GetChatFlow.class);
+    private final static Logger log = LoggerFactory.getLogger(GetChatFlow.class);
 
     @CordaInject
     public JsonMarshallingService jsonMarshallingService;

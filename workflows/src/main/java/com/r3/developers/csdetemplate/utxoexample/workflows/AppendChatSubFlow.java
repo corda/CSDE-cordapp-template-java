@@ -1,14 +1,10 @@
 package com.r3.developers.csdetemplate.utxoexample.workflows;
 
-import com.r3.developers.csdetemplate.utxoexample.states.ChatState;
 import net.corda.v5.application.flows.*;
 import net.corda.v5.application.messaging.FlowMessaging;
 import net.corda.v5.application.messaging.FlowSession;
-import net.corda.v5.base.annotations.ConstructorForDeserialization;
-import net.corda.v5.base.annotations.CordaSerializable;
 import net.corda.v5.base.annotations.Suspendable;
 import net.corda.v5.base.types.MemberX500Name;
-import net.corda.v5.crypto.SecureHash;
 import net.corda.v5.ledger.utxo.UtxoLedgerService;
 import net.corda.v5.ledger.utxo.transaction.UtxoSignedTransaction;
 import org.slf4j.Logger;
