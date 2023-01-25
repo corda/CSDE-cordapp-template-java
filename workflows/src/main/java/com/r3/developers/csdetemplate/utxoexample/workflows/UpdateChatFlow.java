@@ -94,7 +94,7 @@ public class UpdateChatFlow implements RPCStartableFlow {
             @SuppressWarnings("DEPRECATION")
             UtxoSignedTransaction signedTransaction = txBuilder.toSignedTransaction(myInfo.getLedgerKeys().get(0));
 
-            return flowEngine.subFlow(new AppendChatSubFlow(signedTransaction, otherMember.getName()));
+            return flowEngine.subFlow(new FinalizeChatSubFlow(signedTransaction, otherMember.getName()));
         } catch (Exception e) {
             log.warn("Failed to process utxo flow for request body '$requestBody' because:'${e.message}'");
             throw e;

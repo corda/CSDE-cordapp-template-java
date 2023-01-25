@@ -14,7 +14,7 @@ plugins {
 }
 
 allprojects {
-    group 'com.r3.hellocorda'
+    group 'com.r3.developers.csdetemplate'
     version '1.0-SNAPSHOT'
 
     def javaVersion = VERSION_11
@@ -30,6 +30,7 @@ allprojects {
     repositories {
         // All dependencies are held in Maven Central
         mavenCentral()
+        mavenLocal()
     }
 
     tasks.withType(Test).configureEach {
