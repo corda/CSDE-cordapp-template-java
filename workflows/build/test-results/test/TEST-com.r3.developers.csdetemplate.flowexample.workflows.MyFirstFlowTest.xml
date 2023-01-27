@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.r3.developers.csdetemplate.flowexample.workflows.MyFirstFlowTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2023-01-27T16:24:36" hostname="21LDN-MAC6PTMD6T" time="1.143">
+<testsuite name="com.r3.developers.csdetemplate.flowexample.workflows.MyFirstFlowTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2023-01-27T16:36:04" hostname="21LDN-MAC6PTMD6T" time="1.143">
   <properties/>
   <testcase name="test_that_MyFirstFLow_returns_correct_message()" classname="com.r3.developers.csdetemplate.flowexample.workflows.MyFirstFlowTest" time="1.143"/>
   <system-out><![CDATA[]]></system-out>

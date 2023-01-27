@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.security.PublicKey;
 import java.util.*;
 
-@CordaSerializable
+//@CordaSerializable
 @BelongsToContract(ChatContract.class)
 public class ChatState implements ContractState {
 
@@ -21,8 +21,8 @@ public class ChatState implements ContractState {
     private String message;
     public List<PublicKey> participants;
 
-    public ChatState() {        // todo why do we need this?
-    }
+//    public ChatState() {        // todo why do we need this?
+//    }
 
     // Allows serialisation and to use a specified UUID.
     @ConstructorForDeserialization
@@ -53,59 +53,35 @@ public class ChatState implements ContractState {
     public UUID getId() {
         return id;
     }
-
-//    public void setId(UUID id) {
-//        this.id = id;
-//    }
-
     public String getChatName() {
         return chatName;
     }
-
-//    public void setChatName(String chatName) {
-//        this.chatName = chatName;
-//    }
-
     public MemberX500Name getMessageFrom() {
         return messageFrom;
     }
-
-//    public void setMessageFrom(MemberX500Name messageFrom) {
-//        this.messageFrom = messageFrom;
-//    }
-
     public String getMessage() {
         return message;
     }
-
-//    public void setMessage(String message) {
-//        this.message = message;
-//    }
-
-    @NotNull
-    @Override
+//    @NotNull
+//    @Override
     public List<PublicKey> getParticipants() {
         return participants;
     }
-
-//    public void setParticipants(List<PublicKey> participants) {
-//        this.participants = participants;
-//    }
 
 
     public ChatState updateMessage(MemberX500Name name, String message) {
         return new ChatState(id, chatName, name, message, participants);
     }
-
-    // todo: why is this overridden
-    @Override
-    public String toString() {
-        return ChatState.class.getName() +
-                "(id=" + id +
-                ", chatName=" + chatName +
-                ", messageFrom=" + messageFrom +
-                ", message=" + message +
-                ", participants=" + participants +
-                ")";
-    }
+//
+//    // todo: why is this overridden
+//    @Override
+//    public String toString() {
+//        return ChatState.class.getName() +
+//                "(id=" + id +
+//                ", chatName=" + chatName +
+//                ", messageFrom=" + messageFrom +
+//                ", message=" + message +
+//                ", participants=" + participants +
+//                ")";
+//    }
 }
