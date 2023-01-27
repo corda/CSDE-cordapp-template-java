@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - MyFirstFlowTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>MyFirstFlowTest</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/com.r3.developers.csdetemplate.flowexample.workflows.html">com.r3.developers.csdetemplate.flowexample.workflows</a> &gt; MyFirstFlowTest</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">1</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">1.143s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="tabs">
+<ul class="tabLinks">
+<li>
+<a href="#tab0">Tests</a>
+</li>
+<li>
+<a href="#tab1">Standard error</a>
+</li>
+</ul>
+<div id="tab0" class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">test_that_MyFirstFLow_returns_correct_message()</td>
+<td class="success">1.143s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+<div id="tab1" class="tab">
+<h2>Standard error</h2>
+<span class="code">
+<pre>[Test worker] INFO net.corda.simulator.runtime.SimulatorDelegateBase - Creating virtual node for &quot;CN=Alice, OU=Test Dept, O=R3, L=London, C=GB&quot;, flow classes: [com.r3.developers.csdetemplate.flowexample.workflows.MyFirstFlow]
+[Test worker] INFO net.corda.simulator.runtime.SimulatorDelegateBase - Creating virtual node for &quot;CN=Bob, OU=Test Dept, O=R3, L=London, C=GB&quot;, flow classes: [com.r3.developers.csdetemplate.flowexample.workflows.MyFirstFlowResponder]
+[Test worker] INFO net.corda.simulator.runtime.SimulatedVirtualNodeBase - Calling flow com.r3.developers.csdetemplate.flowexample.workflows.MyFirstFlow for member &quot;CN=Alice, OU=Test Dept, O=R3, L=London, C=GB&quot; with request: {&quot;otherMember&quot;:&quot;CN=Bob, OU=Test Dept, O=R3, L=London, C=GB&quot;}
+[Test worker] INFO net.corda.simulator.runtime.flows.DefaultServicesInjector - Injecting services into class com.r3.developers.csdetemplate.flowexample.workflows.MyFirstFlow for &quot;CN=Alice, OU=Test Dept, O=R3, L=London, C=GB&quot;
+[Test worker] INFO net.corda.simulator.runtime.flows.DefaultServicesInjector - Injecting JsonMarshallingService
+[Test worker] INFO net.corda.simulator.runtime.flows.DefaultServicesInjector - Injecting FlowMessaging
+[Test worker] INFO net.corda.simulator.runtime.flows.DefaultServicesInjector - Injecting MemberLookup
+[Test worker] INFO com.r3.developers.csdetemplate.flowexample.workflows.MyFirstFlow - MFF: MyFirstFlow.call() called
+[Test worker] INFO com.r3.developers.csdetemplate.flowexample.workflows.MyFirstFlow - MFF: requestBody: {&quot;otherMember&quot;:&quot;CN=Bob, OU=Test Dept, O=R3, L=London, C=GB&quot;}
+[Test worker] INFO com.r3.developers.csdetemplate.flowexample.workflows.MyFirstFlow - MFF: message.message: Hello from CN=Alice, OU=Test Dept, O=R3, L=London, C=GB.
+[Test worker] INFO net.corda.simulator.runtime.messaging.ConcurrentFlowMessaging - Initiating flow for protocol &quot;my-first-flow&quot; from &quot;CN=Alice, OU=Test Dept, O=R3, L=London, C=GB&quot; to &quot;CN=Bob, OU=Test Dept, O=R3, L=London, C=GB&quot;
+[Test worker] INFO net.corda.simulator.runtime.messaging.ConcurrentFlowMessaging - Matched protocol with responder class class com.r3.developers.csdetemplate.flowexample.workflows.MyFirstFlowResponder
+[Test worker] INFO net.corda.simulator.runtime.flows.DefaultServicesInjector - Injecting services into class com.r3.developers.csdetemplate.flowexample.workflows.MyFirstFlowResponder for &quot;CN=Bob, OU=Test Dept, O=R3, L=London, C=GB&quot;
+[Test worker] INFO net.corda.simulator.runtime.flows.DefaultServicesInjector - Injecting MemberLookup
+[Test worker] INFO net.corda.simulator.runtime.messaging.ConcurrentFlowMessaging - Starting responder thread for protocol &quot;my-first-flow&quot; from &quot;CN=Alice, OU=Test Dept, O=R3, L=London, C=GB&quot; to &quot;CN=Bob, OU=Test Dept, O=R3, L=London, C=GB&quot;
+[Thread-3] INFO com.r3.developers.csdetemplate.flowexample.workflows.MyFirstFlowResponder - MFF: MyFirstResponderFlow.call() called
+[Thread-3] INFO com.r3.developers.csdetemplate.flowexample.workflows.MyFirstFlowResponder - MFF: Message received from CN=Bob, OU=Test Dept, O=R3, L=London, C=GB:Hello from CN=Alice, OU=Test Dept, O=R3, L=London, C=GB.
+[Thread-3] INFO com.r3.developers.csdetemplate.flowexample.workflows.MyFirstFlowResponder - MFF: response.message: Hello Alice, best wishes from Bob
+[Thread-3] INFO net.corda.simulator.runtime.messaging.BaseInitiatorFlowSession - Initiator session with protocol my-first-flow, counterparty &quot;CN=Bob, OU=Test Dept, O=R3, L=London, C=GB&quot;; responder signalled close
+[Test worker] INFO net.corda.simulator.runtime.flows.BaseFlowManager - FlowMessaging found on flow MyFirstFlow - closing down
+[Thread-3] INFO net.corda.simulator.runtime.messaging.ConcurrentFlowMessaging - Closed responder for protocol &quot;my-first-flow&quot; from &quot;CN=Alice, OU=Test Dept, O=R3, L=London, C=GB&quot; to &quot;CN=Bob, OU=Test Dept, O=R3, L=London, C=GB&quot;
+[Test worker] INFO net.corda.simulator.runtime.messaging.BaseInitiatorFlowSession - Closing initiator session with protocol my-first-flow, counterparty &quot;CN=Bob, OU=Test Dept, O=R3, L=London, C=GB&quot;; responder is closed: true
+[Test worker] INFO net.corda.simulator.runtime.messaging.BaseInitiatorFlowSession - Closed initiator session with protocol my-first-flow, counterparty &quot;CN=Bob, OU=Test Dept, O=R3, L=London, C=GB&quot;
+[Test worker] INFO net.corda.simulator.runtime.flows.BaseFlowManager - FlowMessaging on flow MyFirstFlow closed
+[Test worker] INFO net.corda.simulator.runtime.SimulatedVirtualNodeBase - Finished flow com.r3.developers.csdetemplate.flowexample.workflows.MyFirstFlow for member &quot;CN=Alice, OU=Test Dept, O=R3, L=London, C=GB&quot;
+</pre>
+</span>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="http://www.gradle.org">Gradle 7.4.2</a> at 27 Jan 2023, 16:24:37</p>
+</div>
+</div>
+</body>
+</html>

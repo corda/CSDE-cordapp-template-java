@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.r3.developers.csdetemplate.flowexample.workflows.MyFirstFlowTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2023-01-27T16:24:36" hostname="21LDN-MAC6PTMD6T" time="1.143">
+  <properties/>
+  <testcase name="test_that_MyFirstFLow_returns_correct_message()" classname="com.r3.developers.csdetemplate.flowexample.workflows.MyFirstFlowTest" time="1.143"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[[Test worker] INFO net.corda.simulator.runtime.SimulatorDelegateBase - Creating virtual node for "CN=Alice, OU=Test Dept, O=R3, L=London, C=GB", flow classes: [com.r3.developers.csdetemplate.flowexample.workflows.MyFirstFlow]
+[Test worker] INFO net.corda.simulator.runtime.SimulatorDelegateBase - Creating virtual node for "CN=Bob, OU=Test Dept, O=R3, L=London, C=GB", flow classes: [com.r3.developers.csdetemplate.flowexample.workflows.MyFirstFlowResponder]
+[Test worker] INFO net.corda.simulator.runtime.SimulatedVirtualNodeBase - Calling flow com.r3.developers.csdetemplate.flowexample.workflows.MyFirstFlow for member "CN=Alice, OU=Test Dept, O=R3, L=London, C=GB" with request: {"otherMember":"CN=Bob, OU=Test Dept, O=R3, L=London, C=GB"}
+[Test worker] INFO net.corda.simulator.runtime.flows.DefaultServicesInjector - Injecting services into class com.r3.developers.csdetemplate.flowexample.workflows.MyFirstFlow for "CN=Alice, OU=Test Dept, O=R3, L=London, C=GB"
+[Test worker] INFO net.corda.simulator.runtime.flows.DefaultServicesInjector - Injecting JsonMarshallingService
+[Test worker] INFO net.corda.simulator.runtime.flows.DefaultServicesInjector - Injecting FlowMessaging
+[Test worker] INFO net.corda.simulator.runtime.flows.DefaultServicesInjector - Injecting MemberLookup
+[Test worker] INFO com.r3.developers.csdetemplate.flowexample.workflows.MyFirstFlow - MFF: MyFirstFlow.call() called
+[Test worker] INFO com.r3.developers.csdetemplate.flowexample.workflows.MyFirstFlow - MFF: requestBody: {"otherMember":"CN=Bob, OU=Test Dept, O=R3, L=London, C=GB"}
+[Test worker] INFO com.r3.developers.csdetemplate.flowexample.workflows.MyFirstFlow - MFF: message.message: Hello from CN=Alice, OU=Test Dept, O=R3, L=London, C=GB.
+[Test worker] INFO net.corda.simulator.runtime.messaging.ConcurrentFlowMessaging - Initiating flow for protocol "my-first-flow" from "CN=Alice, OU=Test Dept, O=R3, L=London, C=GB" to "CN=Bob, OU=Test Dept, O=R3, L=London, C=GB"
+[Test worker] INFO net.corda.simulator.runtime.messaging.ConcurrentFlowMessaging - Matched protocol with responder class class com.r3.developers.csdetemplate.flowexample.workflows.MyFirstFlowResponder
+[Test worker] INFO net.corda.simulator.runtime.flows.DefaultServicesInjector - Injecting services into class com.r3.developers.csdetemplate.flowexample.workflows.MyFirstFlowResponder for "CN=Bob, OU=Test Dept, O=R3, L=London, C=GB"
+[Test worker] INFO net.corda.simulator.runtime.flows.DefaultServicesInjector - Injecting MemberLookup
+[Test worker] INFO net.corda.simulator.runtime.messaging.ConcurrentFlowMessaging - Starting responder thread for protocol "my-first-flow" from "CN=Alice, OU=Test Dept, O=R3, L=London, C=GB" to "CN=Bob, OU=Test Dept, O=R3, L=London, C=GB"
+[Thread-3] INFO com.r3.developers.csdetemplate.flowexample.workflows.MyFirstFlowResponder - MFF: MyFirstResponderFlow.call() called
+[Thread-3] INFO com.r3.developers.csdetemplate.flowexample.workflows.MyFirstFlowResponder - MFF: Message received from CN=Bob, OU=Test Dept, O=R3, L=London, C=GB:Hello from CN=Alice, OU=Test Dept, O=R3, L=London, C=GB.
+[Thread-3] INFO com.r3.developers.csdetemplate.flowexample.workflows.MyFirstFlowResponder - MFF: response.message: Hello Alice, best wishes from Bob
+[Thread-3] INFO net.corda.simulator.runtime.messaging.BaseInitiatorFlowSession - Initiator session with protocol my-first-flow, counterparty "CN=Bob, OU=Test Dept, O=R3, L=London, C=GB"; responder signalled close
+[Test worker] INFO net.corda.simulator.runtime.flows.BaseFlowManager - FlowMessaging found on flow MyFirstFlow - closing down
+[Thread-3] INFO net.corda.simulator.runtime.messaging.ConcurrentFlowMessaging - Closed responder for protocol "my-first-flow" from "CN=Alice, OU=Test Dept, O=R3, L=London, C=GB" to "CN=Bob, OU=Test Dept, O=R3, L=London, C=GB"
+[Test worker] INFO net.corda.simulator.runtime.messaging.BaseInitiatorFlowSession - Closing initiator session with protocol my-first-flow, counterparty "CN=Bob, OU=Test Dept, O=R3, L=London, C=GB"; responder is closed: true
+[Test worker] INFO net.corda.simulator.runtime.messaging.BaseInitiatorFlowSession - Closed initiator session with protocol my-first-flow, counterparty "CN=Bob, OU=Test Dept, O=R3, L=London, C=GB"
+[Test worker] INFO net.corda.simulator.runtime.flows.BaseFlowManager - FlowMessaging on flow MyFirstFlow closed
+[Test worker] INFO net.corda.simulator.runtime.SimulatedVirtualNodeBase - Finished flow com.r3.developers.csdetemplate.flowexample.workflows.MyFirstFlow for member "CN=Alice, OU=Test Dept, O=R3, L=London, C=GB"
+]]></system-err>
+</testsuite>

@@ -14,17 +14,23 @@ import java.util.*;
 @CordaSerializable
 @BelongsToContract(ChatContract.class)
 public class ChatState implements ContractState {
-    public ChatState() {
+
+    private UUID id;
+    private String chatName;
+    private MemberX500Name messageFrom;
+    private String message;
+    public List<PublicKey> participants;
+
+    public ChatState() {        // todo why do we need this?
     }
 
     // Allows serialisation and to use a specified UUID.
     @ConstructorForDeserialization
     public ChatState(UUID id,
-             String chatName,
-             MemberX500Name messageFrom,
-             String message,
-             List<PublicKey> participants
-              ) {
+                     String chatName,
+                     MemberX500Name messageFrom,
+                     String message,
+                     List<PublicKey> participants) {
         this.id = id;
         this.chatName = chatName;
         this.messageFrom = messageFrom;
@@ -34,10 +40,9 @@ public class ChatState implements ContractState {
 
     // Convenience constructor for initial ChatState objects that need a new UUID generated.
     public ChatState(String chatName,
-              MemberX500Name messageFrom,
-              String message,
-              List<PublicKey> participants
-    ) {
+                     MemberX500Name messageFrom,
+                     String message,
+                     List<PublicKey> participants) {
         this(UUID.randomUUID(),
                 chatName,
                 messageFrom,
@@ -49,33 +54,33 @@ public class ChatState implements ContractState {
         return id;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
+//    public void setId(UUID id) {
+//        this.id = id;
+//    }
 
     public String getChatName() {
         return chatName;
     }
 
-    public void setChatName(String chatName) {
-        this.chatName = chatName;
-    }
+//    public void setChatName(String chatName) {
+//        this.chatName = chatName;
+//    }
 
     public MemberX500Name getMessageFrom() {
         return messageFrom;
     }
 
-    public void setMessageFrom(MemberX500Name messageFrom) {
-        this.messageFrom = messageFrom;
-    }
+//    public void setMessageFrom(MemberX500Name messageFrom) {
+//        this.messageFrom = messageFrom;
+//    }
 
     public String getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+//    public void setMessage(String message) {
+//        this.message = message;
+//    }
 
     @NotNull
     @Override
@@ -83,20 +88,16 @@ public class ChatState implements ContractState {
         return participants;
     }
 
-    public void setParticipants(List<PublicKey> participants) {
-        this.participants = participants;
-    }
+//    public void setParticipants(List<PublicKey> participants) {
+//        this.participants = participants;
+//    }
 
-    public UUID id;
-    public String chatName;
-    public MemberX500Name messageFrom;
-    public String message;
-    public List<PublicKey> participants;
 
     public ChatState updateMessage(MemberX500Name name, String message) {
         return new ChatState(id, chatName, name, message, participants);
     }
 
+    // todo: why is this overridden
     @Override
     public String toString() {
         return ChatState.class.getName() +
