@@ -33,8 +33,8 @@ public class FinalizeChatSubFlow implements SubFlow<String> {
     @Suspendable
     public String call() {
 
-        log.info("AppendChatFlow.call() called");
-        log.info("otherMember = " + otherMember);
+//        log.info("AppendChatFlow.call() called");
+//        log.info("otherMember = " + otherMember);
         FlowSession session = flowMessaging.initiateFlow(otherMember);
 
         String retVal;

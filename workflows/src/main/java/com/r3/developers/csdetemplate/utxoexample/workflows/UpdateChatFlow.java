@@ -26,7 +26,6 @@ import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.r3.developers.csdetemplate.utilities.CorDappHelpers.findAndExpectExactlyOne;
 import static java.util.Objects.*;
 import static java.util.stream.Collectors.toList;
 
