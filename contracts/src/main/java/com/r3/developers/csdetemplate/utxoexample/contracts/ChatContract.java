@@ -8,8 +8,11 @@ import net.corda.v5.ledger.utxo.ContractState;
 import net.corda.v5.ledger.utxo.StateAndRef;
 import net.corda.v5.ledger.utxo.transaction.UtxoLedgerTransaction;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.security.PublicKey;
+import java.util.Objects;
 import java.util.Set;
 
 import static java.util.Objects.*;
@@ -17,6 +20,8 @@ import static java.util.Objects.*;
 // todo: START here
 
 public class ChatContract implements Contract {
+
+    private final static Logger log = LoggerFactory.getLogger(ChatContract.class);
 
     public static class Create implements Command { }
     public static class Update implements Command { }
@@ -47,8 +52,8 @@ public class ChatContract implements Contract {
             requireThat(transaction.getOutputContractStates().size() == 1, "When command is Update there should be one and only one output state.");
 
             ChatState input = transaction.getInputStates(ChatState.class).get(0);
-            requireThat(input.getId() == output.getId(), "When command is Update id must not change.");
-            requireThat(input.getChatName() == output.getChatName(), "When command is Update chatName must not change.");
+            requireThat(input.getId().equals(output.getId()), "When command is Update id must not change.");
+            requireThat(input.getChatName().equals(output.getChatName()), "When command is Update chatName must not change.");
             requireThat(
                     input.getParticipants().containsAll(output.getParticipants()) &&
                     output.getParticipants().containsAll(input.getParticipants()),
