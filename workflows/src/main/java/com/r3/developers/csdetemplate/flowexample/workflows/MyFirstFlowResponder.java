@@ -1,4 +1,4 @@
-package com.r3.developers.csdetemplate.workflows;
+package com.r3.developers.csdetemplate.flowexample.workflows;
 
 import net.corda.v5.application.flows.CordaInject;
 import net.corda.v5.application.flows.InitiatedBy;
@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 public class MyFirstFlowResponder implements ResponderFlow {
 
     // Log messages from the flows for debugging.
-    private final Logger log = LoggerFactory.getLogger(MyFirstFlowResponder.class);
+    private final static Logger log = LoggerFactory.getLogger(MyFirstFlowResponder.class);
 
     // MemberLookup looks for information about members of the virtual network which 
     // this CorDapp operates in. 
@@ -44,7 +44,7 @@ public class MyFirstFlowResponder implements ResponderFlow {
         Message receivedMessage = session.receive(Message.class);
 
         // Log the message as a proxy for performing some useful operation on it.
-        log.info("MFF: Message received from " + receivedMessage.sender + ":" + receivedMessage.message);
+        log.info("MFF: Message received from " + receivedMessage.getSender() + ":" + receivedMessage.getMessage());
 
         // Get our identity from the MemberLookup service.
         MemberX500Name ourIdentity = memberLookup.myInfo().getName();
@@ -54,19 +54,9 @@ public class MyFirstFlowResponder implements ResponderFlow {
                 "Hello " + session.getCounterparty().getCommonName() + ", best wishes from " + ourIdentity.getCommonName());
 
         // Log the response to be sent.
-        log.info("MFF: response.message: " + response.message);
+        log.info("MFF: response.message: " + response.getMessage());
 
         // Send the response via the send method on the flow session
         session.send(response);
     }
 }
-/*
-RequestBody for triggering the flow via http-rpc:
-{
-    "clientRequestId": "r1",
-    "flowClassName": "com.r3.developers.csdetemplate.MyFirstFlow",
-    "requestData": {
-        "otherMember":"CN=Bob, OU=Test Dept, O=R3, L=London, C=GB"
-        }
-}
- */
