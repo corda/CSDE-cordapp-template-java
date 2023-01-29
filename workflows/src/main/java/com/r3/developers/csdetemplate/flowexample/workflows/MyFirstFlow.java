@@ -58,7 +58,7 @@ public class MyFirstFlow implements RPCStartableFlow {
         MyFirstFlowStartArgs flowArgs = requestBody.getRequestBodyAs(jsonMarshallingService, MyFirstFlowStartArgs.class);
 
         // Obtain the MemberX500Name of the counterparty.
-        MemberX500Name otherMember = flowArgs.otherMember;
+        MemberX500Name otherMember = flowArgs.getOtherMember();
 
         // Get our identity from the MemberLookup service.
         MemberX500Name ourIdentity = memberLookup.myInfo().getName();
@@ -67,7 +67,7 @@ public class MyFirstFlow implements RPCStartableFlow {
         Message message = new Message(otherMember, "Hello from " + ourIdentity + ".");
 
         // Log the message to be sent.
-        log.info("MFF: message.message: " + message.message);
+        log.info("MFF: message.message: " + message.getMessage());
 
         // Start a flow session with the otherMember using the FlowMessaging service.
         // The otherMember's virtual node will run the corresponding MyFirstFlowResponder responder flow.
@@ -82,16 +82,15 @@ public class MyFirstFlow implements RPCStartableFlow {
         // The return value of a RPCStartableFlow must always be a String. This will be passed
         // back as the REST RPC response when the status of the flow is queried on Corda, or as the return
         // value from the flow when testing using the simulator.
-        return response.message;
+        return response.getMessage();
     }
 }
-
 
 /*
 RequestBody for triggering the flow via http-rpc:
 {
     "clientRequestId": "r1",
-    "flowClassName": "com.r3.developers.csdetemplate.workflows.MyFirstFlow",
+    "flowClassName": "com.r3.developers.csdetemplate.flowexample.workflows.MyFirstFlow",
     "requestData": {
         "otherMember":"CN=Bob, OU=Test Dept, O=R3, L=London, C=GB"
         }
