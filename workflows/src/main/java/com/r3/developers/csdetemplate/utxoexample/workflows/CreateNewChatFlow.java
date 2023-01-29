@@ -5,8 +5,8 @@ import com.r3.developers.csdetemplate.utxoexample.states.ChatState;
 import net.corda.v5.application.flows.*;
 import net.corda.v5.application.marshalling.JsonMarshallingService;
 import net.corda.v5.application.membership.MemberLookup;
-import net.corda.v5.application.messaging.FlowMessaging;
 import net.corda.v5.base.annotations.Suspendable;
+import net.corda.v5.base.exceptions.CordaRuntimeException;
 import net.corda.v5.base.types.MemberX500Name;
 import net.corda.v5.ledger.common.NotaryLookup;
 import net.corda.v5.ledger.common.Party;
@@ -15,7 +15,6 @@ import net.corda.v5.ledger.utxo.transaction.UtxoSignedTransaction;
 import net.corda.v5.ledger.utxo.transaction.UtxoTransactionBuilder;
 import net.corda.v5.membership.MemberInfo;
 import net.corda.v5.membership.NotaryInfo;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,16 +45,15 @@ public class CreateNewChatFlow implements RPCStartableFlow {
     public NotaryLookup notaryLookup;
 
     @CordaInject
-    public FlowMessaging flowMessaging;
-
-    @CordaInject
     public FlowEngine flowEngine;
 
-    @NotNull
+//    @NotNull
     @Suspendable
     @Override
-    public String call(@NotNull RPCRequestData requestBody) throws IllegalArgumentException {
+//    public String call(@NotNull RPCRequestData requestBody) throws IllegalArgumentException {
+    public String call(RPCRequestData requestBody) {
         log.info("CreateNewChatFlow.call() called");
+
 
         try {
             CreateNewChatFlowArgs flowArgs = requestBody.getRequestBodyAs(jsonMarshallingService, CreateNewChatFlowArgs.class);
@@ -63,10 +61,11 @@ public class CreateNewChatFlow implements RPCStartableFlow {
             MemberInfo myInfo = memberLookup.myInfo();
             MemberInfo otherMember = requireNonNull(
                     memberLookup.lookup(MemberX500Name.parse(flowArgs.getOtherMember())),
-                    "can't find other member"
+                    "MemberLookup can't find otherMember specified in flow arguments."
             );
 
-            ChatState chatState = new ChatState(UUID.randomUUID(),
+            ChatState chatState = new ChatState(
+                    UUID.randomUUID(),
                     flowArgs.getChatName(),
                     myInfo.getName(),
                     flowArgs.getMessage(),
@@ -92,19 +91,28 @@ public class CreateNewChatFlow implements RPCStartableFlow {
             // Quasar checkpointing has a bugs handling lambdas in flows.
             // This is being worked upon.
             PublicKey notaryKey = null;
-            for(MemberInfo info: memberLookup.lookup()){
-                if(Objects.equals(info.getMemberProvidedContext().get("corda.notary.service.name"), notary.getName().toString()) ) {
-                    notaryKey = info.getLedgerKeys().get(0);
+            for(MemberInfo memberInfo: memberLookup.lookup()){
+                if(Objects.equals(
+                        memberInfo.getMemberProvidedContext().get("corda.notary.service.name"),
+                        notary.getName().toString())) {
+                    notaryKey = memberInfo.getLedgerKeys().get(0);
                     break;
                 }
             }
-            if(notary == null) {
-                throw new NullPointerException("No notary found");
+
+            if(notaryKey == null) {
+                throw new CordaRuntimeException("No notary PublicKey found");
             }
 
-            log.info("notary.getName()=" + notary.getName());
-            log.info("chatState = " + chatState);
-            log.info("chatState.getParticipants().size() = " + chatState.getParticipants().size());
+            // This exception would never be reached because if 'notaryLookup.getNotaryServices().iterator().next()'
+            // didn't return a value, it would have thrown a NoSuchElementException
+//            if(notary == null) {
+//                throw new NullPointerException("No notary found");
+//            }
+
+//            log.info("notary.getName()=" + notary.getName());
+//            log.info("chatState = " + chatState);
+//            log.info("chatState.getParticipants().size() = " + chatState.getParticipants().size());
 
             UtxoTransactionBuilder txBuilder = ledgerService.getTransactionBuilder()
                     .setNotary(new Party(notary.getName(), notaryKey))
@@ -114,17 +122,17 @@ public class CreateNewChatFlow implements RPCStartableFlow {
                     .addSignatories(chatState.getParticipants());
 
 
-            log.info("Before UtxoSignedTransaction signedTransaction = txBuilder.toSignedTransaction(myInfo.getLedgerKeys().get(0));");
-            log.info("myInfo.getLedgerKeys().size() = " + myInfo.getLedgerKeys().size());
-            log.info("myInfo.getLedgerKeys().get(0) = " + myInfo.getLedgerKeys().get(0));
+//            log.info("Before UtxoSignedTransaction signedTransaction = txBuilder.toSignedTransaction(myInfo.getLedgerKeys().get(0));");
+//            log.info("myInfo.getLedgerKeys().size() = " + myInfo.getLedgerKeys().size());
+//            log.info("myInfo.getLedgerKeys().get(0) = " + myInfo.getLedgerKeys().get(0));
             @SuppressWarnings("DEPRECATION")
             UtxoSignedTransaction signedTransaction = txBuilder.toSignedTransaction(myInfo.getLedgerKeys().get(0));
-            log.info("After UtxoSignedTransaction signedTransaction = txBuilder.toSignedTransaction(myInfo.getLedgerKeys().get(0));");
-            return flowEngine.subFlow(new AppendChatSubFlow(signedTransaction, otherMember.getName()));
+//            log.info("After UtxoSignedTransaction signedTransaction = txBuilder.toSignedTransaction(myInfo.getLedgerKeys().get(0));");
+            return flowEngine.subFlow(new FinalizeChatSubFlow(signedTransaction, otherMember.getName()));
         }
         catch (Exception e) {
             log.warn("Failed to process utxo flow for request body '$requestBody' because:'${e.message}'");
-            throw e;
+            throw new CordaRuntimeException(e.getMessage());
         }
     }
 }

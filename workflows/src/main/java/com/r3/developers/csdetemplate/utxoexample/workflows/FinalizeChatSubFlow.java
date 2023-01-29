@@ -14,14 +14,14 @@ import java.util.Arrays;
 import java.util.List;
 
 @InitiatingFlow(protocol = "append-chat-protocol")
-public class AppendChatSubFlow implements SubFlow<String> {
+public class FinalizeChatSubFlow implements SubFlow<String> {
 
-    public AppendChatSubFlow(UtxoSignedTransaction signedTransaction, MemberX500Name otherMember) {
+    public FinalizeChatSubFlow(UtxoSignedTransaction signedTransaction, MemberX500Name otherMember) {
         this.signedTransaction = signedTransaction;
         this.otherMember = otherMember;
     }
 
-    private final static Logger log = LoggerFactory.getLogger(AppendChatSubFlow.class);
+    private final static Logger log = LoggerFactory.getLogger(FinalizeChatSubFlow.class);
 
     @CordaInject
     public UtxoLedgerService ledgerService;

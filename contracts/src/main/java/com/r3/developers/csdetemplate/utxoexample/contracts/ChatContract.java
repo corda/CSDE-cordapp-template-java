@@ -34,7 +34,6 @@ public class ChatContract implements Contract {
     @Override
     public void verify(UtxoLedgerTransaction transaction) {
 
-
 //        Command command = requireNonNull( transaction.getCommands().get(0), "Require a single command");  // this doesn't ensure there is one command
         requireThat( transaction.getCommands().size() == 1, "Require a single command.");
         Command command = transaction.getCommands().get(0);
@@ -58,7 +57,6 @@ public class ChatContract implements Contract {
                     input.getParticipants().containsAll(output.getParticipants()) &&
                     output.getParticipants().containsAll(input.getParticipants()),
                     "When command is Update participants must not change.");
-
         }
         else {
             throw new CordaRuntimeException("Unsupported command");
