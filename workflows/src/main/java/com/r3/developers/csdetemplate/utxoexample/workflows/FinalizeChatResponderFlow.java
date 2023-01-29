@@ -6,6 +6,7 @@ import net.corda.v5.application.flows.InitiatedBy;
 import net.corda.v5.application.flows.ResponderFlow;
 import net.corda.v5.application.messaging.FlowSession;
 import net.corda.v5.base.annotations.Suspendable;
+import net.corda.v5.base.types.MemberX500Name;
 import net.corda.v5.ledger.utxo.UtxoLedgerService;
 import net.corda.v5.ledger.utxo.transaction.UtxoSignedTransaction;
 import net.corda.v5.ledger.utxo.transaction.UtxoTransactionValidator;
@@ -13,8 +14,11 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.r3.developers.csdetemplate.utxoexample.workflows.ResponderValidationHelpers.checkForBannedWords;
-import static com.r3.developers.csdetemplate.utxoexample.workflows.ResponderValidationHelpers.checkMessageFromMatchesCounterparty;
+import java.util.Arrays;
+import java.util.List;
+
+//import static com.r3.developers.csdetemplate.utxoexample.workflows.ResponderValidationHelpers.checkForBannedWords;
+//import static com.r3.developers.csdetemplate.utxoexample.workflows.ResponderValidationHelpers.checkMessageFromMatchesCounterparty;
 
 @InitiatedBy(protocol = "finalize-chat-protocol")
 public class FinalizeChatResponderFlow implements ResponderFlow {
@@ -25,8 +29,10 @@ public class FinalizeChatResponderFlow implements ResponderFlow {
 
     @Suspendable
     @Override
-    public void call(@NotNull FlowSession session) {
-        log.info("AppendChatResponderFlow.call() called");
+    public void call(FlowSession session) {
+
+        log.info("FinalizeChatResponderFlow.call() called");
+
         try {
             UtxoTransactionValidator txValidator = ledgerTransaction -> {
                 ChatState state = (ChatState) ledgerTransaction.getOutputContractStates().get(0);
@@ -45,4 +51,17 @@ public class FinalizeChatResponderFlow implements ResponderFlow {
             log.warn("Exceptionally finished responder flow", e);
         }
     }
+
+
+    @Suspendable
+    Boolean checkForBannedWords(String str) {
+        List<String> bannedWords = Arrays.asList("banana", "apple", "pear");
+        return bannedWords.stream().anyMatch(str::contains);
+    }
+
+    @Suspendable
+    Boolean checkMessageFromMatchesCounterparty(ChatState state, MemberX500Name otherMember) {
+        return state.getMessageFrom().equals(otherMember);
+    }
+
 }

@@ -16,6 +16,10 @@ import java.util.List;
 @InitiatingFlow(protocol = "finalize-chat-protocol")
 public class FinalizeChatSubFlow implements SubFlow<String> {
 
+    // these need to be private + good practice is to declare them at the start of the class
+    private final UtxoSignedTransaction signedTransaction;
+    private final MemberX500Name otherMember;
+
     public FinalizeChatSubFlow(UtxoSignedTransaction signedTransaction, MemberX500Name otherMember) {
         this.signedTransaction = signedTransaction;
         this.otherMember = otherMember;
@@ -33,46 +37,47 @@ public class FinalizeChatSubFlow implements SubFlow<String> {
     @Suspendable
     public String call() {
 
-//        log.info("AppendChatFlow.call() called");
+        log.info("FinalizeChatFlow.call() called");
 //        log.info("otherMember = " + otherMember);
         FlowSession session = flowMessaging.initiateFlow(otherMember);
 
-        String retVal;
+        String result;
         try {
             List<FlowSession> sessionsList = Arrays.asList(session);
-            log.info("sessionList.size()=" + sessionsList.size());
+//            log.info("sessionList.size()=" + sessionsList.size());
 
             UtxoSignedTransaction finalizedSignedTransaction = ledgerService.finalize(
                     signedTransaction,
                     sessionsList
             );
 
-            retVal = finalizedSignedTransaction.getId().toString();
-            log.info("Success! Response: " + retVal);
+            result = finalizedSignedTransaction.getId().toString();
+            log.info("Success! Response: " + result);
         } catch (Exception e) {
             log.warn("Finality failed", e);
-            retVal = "Finality failed, " + e.getMessage();
+            result = "Finality failed, " + e.getMessage();
         }
-        log.info("AppendChatSubFlow call returns=" + retVal);
-        return retVal;
+//        log.info("FinalizeChatSubFlow call returns=" + retVal);
+        return result;
     }
 
-    public UtxoSignedTransaction getSignedTransaction() {
-        return signedTransaction;
-    }
+    //  We don't need getters and setters as the properties should be private
 
-    public void setSignedTransaction(UtxoSignedTransaction signedTransaction) {
-        this.signedTransaction = signedTransaction;
-    }
+//    public UtxoSignedTransaction getSignedTransaction() {
+//        return signedTransaction;
+//    }
+//
+//    public void setSignedTransaction(UtxoSignedTransaction signedTransaction) {
+//        this.signedTransaction = signedTransaction;
+//    }
+//
+//    public MemberX500Name getOtherMember() {
+//        return otherMember;
+//    }
+//
+//    public void setOtherMember(MemberX500Name otherMember) {
+//        this.otherMember = otherMember;
+//    }
 
-    public MemberX500Name getOtherMember() {
-        return otherMember;
-    }
 
-    public void setOtherMember(MemberX500Name otherMember) {
-        this.otherMember = otherMember;
-    }
-
-    public UtxoSignedTransaction signedTransaction;
-    public MemberX500Name otherMember;
 }

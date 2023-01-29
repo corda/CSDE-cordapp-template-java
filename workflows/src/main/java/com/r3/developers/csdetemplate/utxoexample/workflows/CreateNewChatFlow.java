@@ -28,7 +28,7 @@ import java.util.UUID;
 
 import static java.util.Objects.*;
 
-@InitiatingFlow(protocol = "create-chat-protocol")
+//@InitiatingFlow(protocol = "create-chat-protocol")
 public class CreateNewChatFlow implements RPCStartableFlow {
 
     private final static Logger log = LoggerFactory.getLogger(CreateNewChatFlow.class);
