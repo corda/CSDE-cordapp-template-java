@@ -16,9 +16,9 @@ import org.slf4j.LoggerFactory;
 import static com.r3.developers.csdetemplate.utxoexample.workflows.ResponderValidationHelpers.checkForBannedWords;
 import static com.r3.developers.csdetemplate.utxoexample.workflows.ResponderValidationHelpers.checkMessageFromMatchesCounterparty;
 
-@InitiatedBy(protocol = "append-chat-protocol")
-public class AppendChatResponderFlow implements ResponderFlow {
-    private final static Logger log = LoggerFactory.getLogger(AppendChatResponderFlow.class);
+@InitiatedBy(protocol = "finalize-chat-protocol")
+public class FinalizeChatResponderFlow implements ResponderFlow {
+    private final static Logger log = LoggerFactory.getLogger(FinalizeChatResponderFlow.class);
 
     @CordaInject
     public UtxoLedgerService utxoLedgerService;

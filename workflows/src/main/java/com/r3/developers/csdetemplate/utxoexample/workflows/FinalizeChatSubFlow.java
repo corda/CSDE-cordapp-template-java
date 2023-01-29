@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 import java.util.List;
 
-@InitiatingFlow(protocol = "append-chat-protocol")
+@InitiatingFlow(protocol = "finalize-chat-protocol")
 public class FinalizeChatSubFlow implements SubFlow<String> {
 
     public FinalizeChatSubFlow(UtxoSignedTransaction signedTransaction, MemberX500Name otherMember) {

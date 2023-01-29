@@ -15,6 +15,7 @@ import net.corda.v5.ledger.utxo.transaction.UtxoSignedTransaction;
 import net.corda.v5.ledger.utxo.transaction.UtxoTransactionBuilder;
 import net.corda.v5.membership.MemberInfo;
 import net.corda.v5.membership.NotaryInfo;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,11 +48,11 @@ public class CreateNewChatFlow implements RPCStartableFlow {
     @CordaInject
     public FlowEngine flowEngine;
 
-//    @NotNull
+
     @Suspendable
     @Override
 //    public String call(@NotNull RPCRequestData requestBody) throws IllegalArgumentException {
-    public String call(RPCRequestData requestBody) {
+    public String call( RPCRequestData requestBody) {
         log.info("CreateNewChatFlow.call() called");
 
 
