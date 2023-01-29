@@ -5,11 +5,17 @@ import net.corda.v5.base.annotations.CordaSerializable;
 
 import java.util.UUID;
 
-@CordaSerializable
+//@CordaSerializable
 public class ChatStateResults {
+
+    private UUID id;
+    private String chatName;
+    private String messageFromName;
+    private String message;
+
     public ChatStateResults() {}
 
-    @ConstructorForDeserialization
+//    @ConstructorForDeserialization
     public ChatStateResults(UUID id, String chatName, String messageFromName, String message) {
         this.id = id;
         this.chatName = chatName;
@@ -21,37 +27,34 @@ public class ChatStateResults {
         return id;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
+//    public void setId(UUID id) {
+//        this.id = id;
+//    }
 
     public String getChatName() {
         return chatName;
     }
 
-    public void setChatName(String chatName) {
-        this.chatName = chatName;
-    }
+//    public void setChatName(String chatName) {
+//        this.chatName = chatName;
+//    }
 
     public String getMessageFromName() {
         return messageFromName;
     }
 
-    public void setMessageFromName(String messageFromName) {
-        this.messageFromName = messageFromName;
-    }
+//    public void setMessageFromName(String messageFromName) {
+//        this.messageFromName = messageFromName;
+//    }
 
     public String getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+//    public void setMessage(String message) {
+//        this.message = message;
+//    }
 
-    public UUID id;
-    public String chatName;
-    public String messageFromName;
-    public String message;
+
 
 }

@@ -29,7 +29,7 @@ public class ListChatsFlow implements RPCStartableFlow{
     @CordaInject
     public UtxoLedgerService utxoLedgerService;
 
-    @NotNull
+//    @NotNull
     @Suspendable
     @Override
     public String call(RPCRequestData requestBody) {
