@@ -16,8 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-
-//import static com.r3.developers.csdetemplate.utilities.CorDappHelpers.findAndExpectExactlyOne;
 import static java.util.Objects.*;
 import static java.util.stream.Collectors.toList;
 
@@ -44,17 +42,6 @@ public class GetChatFlow implements RPCStartableFlow {
         if (chatStateAndRefsWithId.size() != 1) throw new CordaRuntimeException("Multiple or zero Chat states with id " + flowArgs.getId() + " found");
         StateAndRef<ChatState> chatStateAndRef = chatStateAndRefsWithId.get(0);
 
-
-//        log.info("GetChatFlow Number of stateAndRefs = " + stateAndRefs.size());
-//        log.info("GetChatFlow stateAndRefs = " + stateAndRefs);
-
-//        StateAndRef<ChatState> state = findAndExpectExactlyOne(stateAndRefs,
-//                stateAndRef -> stateAndRef.getState().getContractState().getId().equals(flowArgs.getId()),
-//                "did not find an unique ChatState"
-//        );
-
-
-
         return jsonMarshallingService.format(resolveMessagesFromBackchain(chatStateAndRef, flowArgs.getNumberOfRecords() ));
     }
 
@@ -76,11 +63,6 @@ public class GetChatFlow implements RPCStartableFlow {
                  ledgerService.findLedgerTransaction(transactionId),
                  "Transaction " +  transactionId + " not found."
             );
-
-//            ChatState output = findAndExpectExactlyOne(
-//                    transaction.getOutputStates(ChatState.class),
-//                    "Expecting one and only one ChatState output for transaction " + transactionId
-//            );
 
             List<ChatState> chatStates = transaction.getOutputStates(ChatState.class);
             if (chatStates.size() != 1) throw new CordaRuntimeException(

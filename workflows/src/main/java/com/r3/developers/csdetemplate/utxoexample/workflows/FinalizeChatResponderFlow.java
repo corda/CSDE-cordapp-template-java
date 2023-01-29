@@ -10,15 +10,11 @@ import net.corda.v5.base.types.MemberX500Name;
 import net.corda.v5.ledger.utxo.UtxoLedgerService;
 import net.corda.v5.ledger.utxo.transaction.UtxoSignedTransaction;
 import net.corda.v5.ledger.utxo.transaction.UtxoTransactionValidator;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
-
-//import static com.r3.developers.csdetemplate.utxoexample.workflows.ResponderValidationHelpers.checkForBannedWords;
-//import static com.r3.developers.csdetemplate.utxoexample.workflows.ResponderValidationHelpers.checkMessageFromMatchesCounterparty;
 
 @InitiatedBy(protocol = "finalize-chat-protocol")
 public class FinalizeChatResponderFlow implements ResponderFlow {
@@ -42,7 +38,6 @@ public class FinalizeChatResponderFlow implements ResponderFlow {
                 log.info("Verified the transaction - " + ledgerTransaction.getId());
             };
 
-            // This is not a problem.
             UtxoSignedTransaction finalizedSignedTransaction = utxoLedgerService.receiveFinality(session, txValidator);
             log.info("Finished responder flow - " + finalizedSignedTransaction.getId());
         }

@@ -15,7 +15,6 @@ import net.corda.v5.ledger.utxo.transaction.UtxoSignedTransaction;
 import net.corda.v5.ledger.utxo.transaction.UtxoTransactionBuilder;
 import net.corda.v5.membership.MemberInfo;
 import net.corda.v5.membership.NotaryInfo;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +27,6 @@ import java.util.UUID;
 
 import static java.util.Objects.*;
 
-//@InitiatingFlow(protocol = "create-chat-protocol")
 public class CreateNewChatFlow implements RPCStartableFlow {
 
     private final static Logger log = LoggerFactory.getLogger(CreateNewChatFlow.class);
@@ -51,10 +49,9 @@ public class CreateNewChatFlow implements RPCStartableFlow {
 
     @Suspendable
     @Override
-//    public String call(@NotNull RPCRequestData requestBody) throws IllegalArgumentException {
     public String call( RPCRequestData requestBody) {
-        log.info("CreateNewChatFlow.call() called");
 
+        log.info("CreateNewChatFlow.call() called");
 
         try {
             CreateNewChatFlowArgs flowArgs = requestBody.getRequestBodyAs(jsonMarshallingService, CreateNewChatFlowArgs.class);
@@ -74,23 +71,7 @@ public class CreateNewChatFlow implements RPCStartableFlow {
             );
 
             NotaryInfo notary = notaryLookup.getNotaryServices().iterator().next();
-            /*
-            // Lambda have problems see https://r3-cev.atlassian.net/browse/CORE-8983
 
-            // Lambda here.
-            Predicate<MemberInfo> myPred = memberInfo -> Objects.equals(
-                    memberInfo.getMemberProvidedContext().get("corda.notary.service.name"),
-                    notary.getName().toString()
-            );
-
-            List<MemberInfo> lmi = memberLookup.lookup();
-            MemberInfo thing = lmi.stream().filter(myPred).iterator().next();
-            PublicKey notaryKey = thing.getLedgerKeys().get(0);
-
-             */
-
-            // Quasar checkpointing has a bugs handling lambdas in flows.
-            // This is being worked upon.
             PublicKey notaryKey = null;
             for(MemberInfo memberInfo: memberLookup.lookup()){
                 if(Objects.equals(
@@ -105,16 +86,6 @@ public class CreateNewChatFlow implements RPCStartableFlow {
                 throw new CordaRuntimeException("No notary PublicKey found");
             }
 
-            // This exception would never be reached because if 'notaryLookup.getNotaryServices().iterator().next()'
-            // didn't return a value, it would have thrown a NoSuchElementException
-//            if(notary == null) {
-//                throw new NullPointerException("No notary found");
-//            }
-
-//            log.info("notary.getName()=" + notary.getName());
-//            log.info("chatState = " + chatState);
-//            log.info("chatState.getParticipants().size() = " + chatState.getParticipants().size());
-
             UtxoTransactionBuilder txBuilder = ledgerService.getTransactionBuilder()
                     .setNotary(new Party(notary.getName(), notaryKey))
                     .setTimeWindowBetween(Instant.now(), Instant.now().plusMillis(Duration.ofDays(1).toMillis()))
@@ -122,13 +93,9 @@ public class CreateNewChatFlow implements RPCStartableFlow {
                     .addCommand(new ChatContract.Create())
                     .addSignatories(chatState.getParticipants());
 
-
-//            log.info("Before UtxoSignedTransaction signedTransaction = txBuilder.toSignedTransaction(myInfo.getLedgerKeys().get(0));");
-//            log.info("myInfo.getLedgerKeys().size() = " + myInfo.getLedgerKeys().size());
-//            log.info("myInfo.getLedgerKeys().get(0) = " + myInfo.getLedgerKeys().get(0));
             @SuppressWarnings("DEPRECATION")
             UtxoSignedTransaction signedTransaction = txBuilder.toSignedTransaction(myInfo.getLedgerKeys().get(0));
-//            log.info("After UtxoSignedTransaction signedTransaction = txBuilder.toSignedTransaction(myInfo.getLedgerKeys().get(0));");
+
             return flowEngine.subFlow(new FinalizeChatSubFlow(signedTransaction, otherMember.getName()));
         }
         catch (Exception e) {
@@ -137,7 +104,6 @@ public class CreateNewChatFlow implements RPCStartableFlow {
         }
     }
 }
-
 
 /*
 RequestBody for triggering the flow via http-rpc:
