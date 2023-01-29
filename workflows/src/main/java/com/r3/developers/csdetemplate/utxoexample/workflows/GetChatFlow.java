@@ -77,7 +77,6 @@ public class GetChatFlow implements RPCStartableFlow {
                  "Transaction " +  transactionId + " not found."
             );
 
-
 //            ChatState output = findAndExpectExactlyOne(
 //                    transaction.getOutputStates(ChatState.class),
 //                    "Expecting one and only one ChatState output for transaction " + transactionId
