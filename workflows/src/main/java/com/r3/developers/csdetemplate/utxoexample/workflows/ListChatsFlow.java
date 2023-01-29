@@ -2,17 +2,12 @@ package com.r3.developers.csdetemplate.utxoexample.workflows;
 
 import com.r3.developers.csdetemplate.utxoexample.states.ChatState;
 import net.corda.v5.application.flows.CordaInject;
-import net.corda.v5.application.flows.FlowEngine;
 import net.corda.v5.application.flows.RPCRequestData;
 import net.corda.v5.application.flows.RPCStartableFlow;
 import net.corda.v5.application.marshalling.JsonMarshallingService;
-import net.corda.v5.application.membership.MemberLookup;
-import net.corda.v5.application.messaging.FlowMessaging;
 import net.corda.v5.base.annotations.Suspendable;
-import net.corda.v5.ledger.common.NotaryLookup;
 import net.corda.v5.ledger.utxo.StateAndRef;
 import net.corda.v5.ledger.utxo.UtxoLedgerService;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +24,6 @@ public class ListChatsFlow implements RPCStartableFlow{
     @CordaInject
     public UtxoLedgerService utxoLedgerService;
 
-//    @NotNull
     @Suspendable
     @Override
     public String call(RPCRequestData requestBody) {
