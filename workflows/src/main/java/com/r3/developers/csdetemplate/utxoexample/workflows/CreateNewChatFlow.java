@@ -24,6 +24,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.UUID;
 
 import static java.util.Objects.*;
 
@@ -65,7 +66,7 @@ public class CreateNewChatFlow implements RPCStartableFlow {
                     "can't find other member"
             );
 
-            ChatState chatState = new ChatState(
+            ChatState chatState = new ChatState(UUID.randomUUID(),
                     flowArgs.getChatName(),
                     myInfo.getName(),
                     flowArgs.getMessage(),

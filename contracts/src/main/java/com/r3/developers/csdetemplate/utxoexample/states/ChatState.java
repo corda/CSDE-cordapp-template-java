@@ -11,6 +11,8 @@ import org.jetbrains.annotations.NotNull;
 import java.security.PublicKey;
 import java.util.*;
 
+// todo: Clear out commented code
+
 //@CordaSerializable
 @BelongsToContract(ChatContract.class)
 public class ChatState implements ContractState {
@@ -38,17 +40,17 @@ public class ChatState implements ContractState {
         this.participants = participants;
     }
 
-    // Convenience constructor for initial ChatState objects that need a new UUID generated.
-    public ChatState(String chatName,
-                     MemberX500Name messageFrom,
-                     String message,
-                     List<PublicKey> participants) {
-        this(UUID.randomUUID(),
-                chatName,
-                messageFrom,
-                message,
-                participants);
-    }
+//    // Convenience constructor for initial ChatState objects that need a new UUID generated.
+//    public ChatState(String chatName,
+//                     MemberX500Name messageFrom,
+//                     String message,
+//                     List<PublicKey> participants) {
+//        this(UUID.randomUUID(),
+//                chatName,
+//                messageFrom,
+//                message,
+//                participants);
+//    }
 
     public UUID getId() {
         return id;
