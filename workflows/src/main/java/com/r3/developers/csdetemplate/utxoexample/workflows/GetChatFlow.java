@@ -6,6 +6,7 @@ import net.corda.v5.application.flows.RPCRequestData;
 import net.corda.v5.application.flows.RPCStartableFlow;
 import net.corda.v5.application.marshalling.JsonMarshallingService;
 import net.corda.v5.base.annotations.Suspendable;
+import net.corda.v5.base.exceptions.CordaRuntimeException;
 import net.corda.v5.crypto.SecureHash;
 import net.corda.v5.ledger.utxo.StateAndRef;
 import net.corda.v5.ledger.utxo.UtxoLedgerService;
@@ -16,8 +17,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-import static com.r3.developers.csdetemplate.utilities.CorDappHelpers.findAndExpectExactlyOne;
+//import static com.r3.developers.csdetemplate.utilities.CorDappHelpers.findAndExpectExactlyOne;
 import static java.util.Objects.*;
+import static java.util.stream.Collectors.toList;
 
 public class GetChatFlow implements RPCStartableFlow {
 
@@ -29,27 +31,36 @@ public class GetChatFlow implements RPCStartableFlow {
     @CordaInject
     public UtxoLedgerService ledgerService;
 
-    @NotNull
+//    @NotNull
     @Override
     @Suspendable
-    public String call(RPCRequestData requestBody) throws IllegalArgumentException {
+    public String call(RPCRequestData requestBody)  {
+
         GetChatFlowArgs flowArgs = requestBody.getRequestBodyAs(jsonMarshallingService, GetChatFlowArgs.class);
-        List<StateAndRef<ChatState>> stateAndRefs = ledgerService.findUnconsumedStatesByType(ChatState.class);
 
-        log.info("GetChatFlow Number of stateAndRefs = " + stateAndRefs.size());
-        log.info("GetChatFlow stateAndRefs = " + stateAndRefs);
+        List<StateAndRef<ChatState>> chatStateAndRefs = ledgerService.findUnconsumedStatesByType(ChatState.class);
+        List<StateAndRef<ChatState>> chatStateAndRefsWithId = chatStateAndRefs.stream()
+                .filter(sar -> sar.getState().getContractState().getId().equals(flowArgs.getId())).collect(toList());
+        if (chatStateAndRefsWithId.size() != 1) throw new CordaRuntimeException("Multiple or zero Chat states with id " + flowArgs.getId() + " found");
+        StateAndRef<ChatState> chatStateAndRef = chatStateAndRefsWithId.get(0);
 
-        StateAndRef<ChatState> state = findAndExpectExactlyOne(stateAndRefs,
-                stateAndRef -> stateAndRef.getState().getContractState().getId().equals(flowArgs.getId()),
-                "did not find an unique ChatState"
-        );
 
-        return jsonMarshallingService.format(resolveMessagesFromBackchain(state, flowArgs.getNumberOfRecords() ));
+//        log.info("GetChatFlow Number of stateAndRefs = " + stateAndRefs.size());
+//        log.info("GetChatFlow stateAndRefs = " + stateAndRefs);
+
+//        StateAndRef<ChatState> state = findAndExpectExactlyOne(stateAndRefs,
+//                stateAndRef -> stateAndRef.getState().getContractState().getId().equals(flowArgs.getId()),
+//                "did not find an unique ChatState"
+//        );
+
+
+
+        return jsonMarshallingService.format(resolveMessagesFromBackchain(chatStateAndRef, flowArgs.getNumberOfRecords() ));
     }
 
     @NotNull
     @Suspendable
-    private List<GetChatResponse> resolveMessagesFromBackchain(StateAndRef<?> stateAndRef, int numberOfRecords) throws IllegalArgumentException {
+    private List<GetChatResponse> resolveMessagesFromBackchain(StateAndRef<?> stateAndRef, int numberOfRecords) {
 
         List<GetChatResponse> messages = new LinkedList<>();
 
@@ -58,17 +69,24 @@ public class GetChatFlow implements RPCStartableFlow {
         boolean moreBackchain = true;
 
         while (moreBackchain) {
+
             SecureHash transactionId = currentStateAndRef.getRef().getTransactionHash();
 
             UtxoLedgerTransaction transaction = requireNonNull(
                  ledgerService.findLedgerTransaction(transactionId),
-                 "Transaction $transactionId not found"
+                 "Transaction " +  transactionId + " not found."
             );
 
-            ChatState output = findAndExpectExactlyOne(
-                    transaction.getOutputStates(ChatState.class),
-                    "Expecting one and only one ChatState output for transaction " + transactionId
-            );
+
+//            ChatState output = findAndExpectExactlyOne(
+//                    transaction.getOutputStates(ChatState.class),
+//                    "Expecting one and only one ChatState output for transaction " + transactionId
+//            );
+
+            List<ChatState> chatStates = transaction.getOutputStates(ChatState.class);
+            if (chatStates.size() != 1) throw new CordaRuntimeException(
+                    "Expecting one and only one ChatState output for transaction " + transactionId + ".");
+            ChatState output = chatStates.get(0);
 
             messages.add(new GetChatResponse(output.getMessageFrom().toString(), output.getMessage()));
             recordsToFetch--;
@@ -78,7 +96,7 @@ public class GetChatFlow implements RPCStartableFlow {
 	        if (inputStateAndRefs.isEmpty() || recordsToFetch == 0) {
 	            moreBackchain = false;
 	        } else if (inputStateAndRefs.size() > 1) {
-	            throw new IllegalArgumentException("More than one input state found for transaction " + transactionId + ".");
+	            throw new CordaRuntimeException("More than one input state found for transaction " + transactionId + ".");
 	        } else {
 	            currentStateAndRef = inputStateAndRefs.get(0);
 	        }

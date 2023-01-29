@@ -72,15 +72,15 @@ public class UpdateChatFlow implements RPCStartableFlow {
 //                    "Multiple or zero Chat states with id " + flowArgs.getId() + " found"
 //            );
 
-            List<StateAndRef<ChatState>> chatStates = ledgerService.findUnconsumedStatesByType(ChatState.class);
-            List<StateAndRef<ChatState>> chatStatesWithId = chatStates.stream()
+            List<StateAndRef<ChatState>> chatStateAndRefs = ledgerService.findUnconsumedStatesByType(ChatState.class);
+            List<StateAndRef<ChatState>> chatStateAndRefsWithId = chatStateAndRefs.stream()
                     .filter(sar -> sar.getState().getContractState().getId().equals(flowArgs.getId())).collect(toList());
-            if (chatStatesWithId.size() != 1) throw new CordaRuntimeException("Multiple or zero Chat states with id " + flowArgs.getId() + " found");
-            StateAndRef<ChatState> stateAndRef = chatStatesWithId.get(0);
+            if (chatStateAndRefsWithId.size() != 1) throw new CordaRuntimeException("Multiple or zero Chat states with id " + flowArgs.getId() + " found");
+            StateAndRef<ChatState> chatStateAndRef = chatStateAndRefsWithId.get(0);
 
 
             MemberInfo myInfo = memberLookup.myInfo();
-            ChatState state = stateAndRef.getState().getContractState();
+            ChatState state = chatStateAndRef.getState().getContractState();
 
             List<MemberInfo> members = state.getParticipants().stream().map(
                     it -> requireNonNull(memberLookup.lookup(it), "Member not found from public Key "+ it + ".")
@@ -95,10 +95,10 @@ public class UpdateChatFlow implements RPCStartableFlow {
             ChatState newChatState = state.updateMessage(myInfo.getName(), flowArgs.getMessage());
 
             UtxoTransactionBuilder txBuilder = ledgerService.getTransactionBuilder()
-                    .setNotary(stateAndRef.getState().getNotary())
+                    .setNotary(chatStateAndRef.getState().getNotary())
                     .setTimeWindowBetween(Instant.now(), Instant.now().plusMillis(Duration.ofDays(1).toMillis()))
                     .addOutputState(newChatState)
-                    .addInputState(stateAndRef.getRef())
+                    .addInputState(chatStateAndRef.getRef())
                     .addCommand(new ChatContract.Update())
                     .addSignatories(newChatState.getParticipants());
 
