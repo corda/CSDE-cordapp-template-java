@@ -34,8 +34,7 @@ public class ChatContract implements Contract {
         requireThat( transaction.getCommands().size() == 1, "Require a single command.");
         Command command = transaction.getCommands().get(0);
 
-        ChatState input = transaction.getOutputStates(ChatState.class).get(0);
-        ChatState output = transaction.getInputStates(ChatState.class).get(0);
+        ChatState output = transaction.getOutputStates(ChatState.class).get(0);
 
         requireThat(output.getParticipants().size() == 2, "The output state should have two and only two participants.");
 
@@ -46,6 +45,8 @@ public class ChatContract implements Contract {
         else if(command.getClass() == Update.class) {
             requireThat(transaction.getInputContractStates().size() == 1, "When command is Update there should be one and only one input state.");
             requireThat(transaction.getOutputContractStates().size() == 1, "When command is Update there should be one and only one output state.");
+
+            ChatState input = transaction.getInputStates(ChatState.class).get(0);
             requireThat(input.getId() == output.getId(), "When command is Update id must not change.");
             requireThat(input.getChatName() == output.getChatName(), "When command is Update chatName must not change.");
             requireThat(
