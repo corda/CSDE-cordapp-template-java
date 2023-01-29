@@ -4,11 +4,14 @@ import net.corda.v5.base.annotations.ConstructorForDeserialization;
 import net.corda.v5.base.annotations.CordaSerializable;
 
 import java.util.UUID;
-@CordaSerializable
+//@CordaSerializable
 public class UpdateChatFlowArgs {
     public UpdateChatFlowArgs() {}
 
-    @ConstructorForDeserialization
+    private UUID id;
+    private String message;
+
+//    @ConstructorForDeserialization
     public UpdateChatFlowArgs(UUID id, String message) {
         this.id = id;
         this.message = message;
@@ -18,19 +21,18 @@ public class UpdateChatFlowArgs {
         return id;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
+//    public void setId(UUID id) {
+//        this.id = id;
+//    }
 
     public String getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+//    public void setMessage(String message) {
+//        this.message = message;
+//    }
 
-    public UUID id;
-    public String message;
+
 
 }

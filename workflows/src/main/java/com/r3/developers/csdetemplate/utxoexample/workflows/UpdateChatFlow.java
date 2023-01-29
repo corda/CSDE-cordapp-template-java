@@ -75,7 +75,7 @@ public class UpdateChatFlow implements RPCStartableFlow {
             List<StateAndRef<ChatState>> chatStates = ledgerService.findUnconsumedStatesByType(ChatState.class);
             List<StateAndRef<ChatState>> chatStatesWithId = chatStates.stream()
                     .filter(sar -> sar.getState().getContractState().getId().equals(flowArgs.getId())).collect(toList());
-            if (chatStatesWithId.size() != 1) throw new CordaRuntimeException("Multiple or zero Chat states with id " + flowArgs.id + " found");
+            if (chatStatesWithId.size() != 1) throw new CordaRuntimeException("Multiple or zero Chat states with id " + flowArgs.getId() + " found");
             StateAndRef<ChatState> stateAndRef = chatStatesWithId.get(0);
 
 

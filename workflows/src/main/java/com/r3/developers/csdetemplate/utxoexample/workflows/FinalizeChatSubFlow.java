@@ -17,6 +17,15 @@ import java.util.List;
 public class FinalizeChatSubFlow implements SubFlow<String> {
 
     // these need to be private + good practice is to declare them at the start of the class
+    // java code conventions:
+    /*
+    * According to Code Conventions for the Java Programming Language, the parts of a class or interface declaration should appear in the following order:
+        * Class (static) variables. First the public class variables, then protected, then package level (no access modifier), and then private.
+        * Instance variables. First the public class variables, then protected, then package level (no access modifier), and then private.
+        * Constructors
+        * Methods
+    * */
+
     private final UtxoSignedTransaction signedTransaction;
     private final MemberX500Name otherMember;
 

@@ -12,7 +12,7 @@ import java.util.List;
 // The Kotlin helper functions are more simple because Kotlin supports functions which are in the package but
 // not in a class.
 
-public final class ResponderValidationHelpers {
+//public final class ResponderValidationHelpers {
 //    public final static List<String> bannedWords = Arrays.asList("banana", "apple", "pear");
 //
 //    @Suspendable
@@ -28,5 +28,5 @@ public final class ResponderValidationHelpers {
     // This class just introduces a scope for some helper functions and should not be instantiated.
 //    private ResponderValidationHelpers() {}
 
-}
+//}
 
