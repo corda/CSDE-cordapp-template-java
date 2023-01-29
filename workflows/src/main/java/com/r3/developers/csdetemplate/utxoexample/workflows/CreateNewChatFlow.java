@@ -132,7 +132,7 @@ public class CreateNewChatFlow implements RPCStartableFlow {
             return flowEngine.subFlow(new FinalizeChatSubFlow(signedTransaction, otherMember.getName()));
         }
         catch (Exception e) {
-            log.warn("Failed to process utxo flow for request body '$requestBody' because:'${e.message}'");
+            log.warn("Failed to process utxo flow for request body " + requestBody + " because: " + e.getMessage());
             throw new CordaRuntimeException(e.getMessage());
         }
     }

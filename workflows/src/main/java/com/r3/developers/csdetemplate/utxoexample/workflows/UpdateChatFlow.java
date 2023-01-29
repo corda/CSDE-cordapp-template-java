@@ -75,7 +75,7 @@ public class UpdateChatFlow implements RPCStartableFlow {
 
             List<StateAndRef<ChatState>> chatStates = ledgerService.findUnconsumedStatesByType(ChatState.class);
             List<StateAndRef<ChatState>> chatStatesWithId = chatStates.stream()
-                    .filter(sar -> sar.getState().getContractState().getId() == flowArgs.getId()).collect(toList());
+                    .filter(sar -> sar.getState().getContractState().getId().equals(flowArgs.getId())).collect(toList());
             if (chatStatesWithId.size() != 1) throw new CordaRuntimeException("Multiple or zero Chat states with id " + flowArgs.id + " found");
             StateAndRef<ChatState> stateAndRef = chatStatesWithId.get(0);
 
@@ -84,7 +84,7 @@ public class UpdateChatFlow implements RPCStartableFlow {
             ChatState state = stateAndRef.getState().getContractState();
 
             List<MemberInfo> members = state.getParticipants().stream().map(
-                    it -> requireNonNull(memberLookup.lookup(it), "Member not found from Key")
+                    it -> requireNonNull(memberLookup.lookup(it), "Member not found from public Key "+ it + ".")
             ).collect(toList());
 
             // Now we want to check that there is only one member other than ourselves in the chat.
@@ -108,7 +108,7 @@ public class UpdateChatFlow implements RPCStartableFlow {
 
             return flowEngine.subFlow(new FinalizeChatSubFlow(signedTransaction, otherMember.getName()));
         } catch (Exception e) {
-            log.warn("Failed to process utxo flow for request body '$requestBody' because:'${e.message}'");
+            log.warn("Failed to process utxo flow for request body " + requestBody + " because: " + e.getMessage());
             throw e;
         }
     }
