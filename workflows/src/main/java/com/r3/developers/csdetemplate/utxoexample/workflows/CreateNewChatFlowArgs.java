@@ -1,5 +1,6 @@
 package com.r3.developers.csdetemplate.utxoexample.workflows;
 
+// A class to hold the deserialized arguments required to start the flow.
 public class CreateNewChatFlowArgs{
 
     // Serialisation service requires a default constructor

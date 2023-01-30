@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.stream.Collectors;
 
+// See Chat CorDapp Design section of the getting started docs for a description of this flow.
 public class ListChatsFlow implements RPCStartableFlow{
 
     private final static Logger log = LoggerFactory.getLogger(ListChatsFlow.class);
@@ -21,6 +22,7 @@ public class ListChatsFlow implements RPCStartableFlow{
     @CordaInject
     public JsonMarshallingService jsonMarshallingService;
 
+    // Injects the UtxoLedgerService to enable the flow to make use of the Ledger API.
     @CordaInject
     public UtxoLedgerService utxoLedgerService;
 
@@ -30,6 +32,7 @@ public class ListChatsFlow implements RPCStartableFlow{
 
         log.info("ListChatsFlow.call() called");
 
+        // Queries the VNode's vault for unconsumed states and converts the result to a serializable DTO.
         List<StateAndRef<ChatState>> states = utxoLedgerService.findUnconsumedStatesByType(ChatState.class);
         List<ChatStateResults> results = states.stream().map( stateAndRef ->
             new ChatStateResults(
@@ -40,6 +43,7 @@ public class ListChatsFlow implements RPCStartableFlow{
                     )
         ).collect(Collectors.toList());
 
+        // Uses the JsonMarshallingService's format() function to serialize the DTO to Json.
         return jsonMarshallingService.format(results);
     }
 }

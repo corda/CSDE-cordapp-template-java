@@ -27,6 +27,7 @@ import java.util.UUID;
 
 import static java.util.Objects.*;
 
+// See Chat CorDapp Design section of the getting started docs for a description of this flow.
 public class CreateNewChatFlow implements RPCStartableFlow {
 
     private final static Logger log = LoggerFactory.getLogger(CreateNewChatFlow.class);
@@ -37,12 +38,14 @@ public class CreateNewChatFlow implements RPCStartableFlow {
     @CordaInject
     public MemberLookup memberLookup;
 
+    // Injects the UtxoLedgerService to enable the flow to make use of the Ledger API.
     @CordaInject
     public UtxoLedgerService ledgerService;
 
     @CordaInject
     public NotaryLookup notaryLookup;
 
+    // FlowEngine service is required to run SubFlows.
     @CordaInject
     public FlowEngine flowEngine;
 
@@ -54,14 +57,17 @@ public class CreateNewChatFlow implements RPCStartableFlow {
         log.info("CreateNewChatFlow.call() called");
 
         try {
+            // Obtain the deserialized input arguments to the flow from the requestBody.
             CreateNewChatFlowArgs flowArgs = requestBody.getRequestBodyAs(jsonMarshallingService, CreateNewChatFlowArgs.class);
 
+            // Get MemberInfos for the Vnode running the flow and the otherMember.
             MemberInfo myInfo = memberLookup.myInfo();
             MemberInfo otherMember = requireNonNull(
                     memberLookup.lookup(MemberX500Name.parse(flowArgs.getOtherMember())),
                     "MemberLookup can't find otherMember specified in flow arguments."
             );
 
+            // Create the ChatState from the input arguments and member information.
             ChatState chatState = new ChatState(
                     UUID.randomUUID(),
                     flowArgs.getChatName(),
@@ -70,8 +76,8 @@ public class CreateNewChatFlow implements RPCStartableFlow {
                     Arrays.asList(myInfo.getLedgerKeys().get(0), otherMember.getLedgerKeys().get(0))
             );
 
+            // Obtain the Notary name and public key.
             NotaryInfo notary = notaryLookup.getNotaryServices().iterator().next();
-
             PublicKey notaryKey = null;
             for(MemberInfo memberInfo: memberLookup.lookup()){
                 if(Objects.equals(
@@ -81,11 +87,13 @@ public class CreateNewChatFlow implements RPCStartableFlow {
                     break;
                 }
             }
-
+            // Note, in Java CorDapps only unchecked RuntimeExceptions can be thrown not
+            // declared checked exceptions as this changes the method signature and breaks override.
             if(notaryKey == null) {
                 throw new CordaRuntimeException("No notary PublicKey found");
             }
 
+            // Use UTXOTransactionBuilder to build up the draft transaction.
             UtxoTransactionBuilder txBuilder = ledgerService.getTransactionBuilder()
                     .setNotary(new Party(notary.getName(), notaryKey))
                     .setTimeWindowBetween(Instant.now(), Instant.now().plusMillis(Duration.ofDays(1).toMillis()))
@@ -93,11 +101,17 @@ public class CreateNewChatFlow implements RPCStartableFlow {
                     .addCommand(new ChatContract.Create())
                     .addSignatories(chatState.getParticipants());
 
+            // Convert the transaction builder to a UTXOSignedTransaction and sign with this Vnode's first Ledger key.
+            // Note, toSignedTransaction() is currently a placeholder method, hence being marked as deprecated.
             @SuppressWarnings("DEPRECATION")
             UtxoSignedTransaction signedTransaction = txBuilder.toSignedTransaction(myInfo.getLedgerKeys().get(0));
 
+            // Call FinalizeChatSubFlow which will finalise the transaction.
+            // If successful the flow will return a String of the created transaction id,
+            // if not successful it will return an error message.
             return flowEngine.subFlow(new FinalizeChatSubFlow(signedTransaction, otherMember.getName()));
         }
+        // Catch any exceptions, log them and rethrow the exception.
         catch (Exception e) {
             log.warn("Failed to process utxo flow for request body " + requestBody + " because: " + e.getMessage());
             throw new CordaRuntimeException(e.getMessage());
