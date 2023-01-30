@@ -30,7 +30,6 @@ public class GetChatFlow implements RPCStartableFlow {
     @CordaInject
     public UtxoLedgerService ledgerService;
 
-//    @NotNull
     @Override
     @Suspendable
     public String call(RPCRequestData requestBody)  {
