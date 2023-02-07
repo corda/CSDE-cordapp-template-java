@@ -17,8 +17,6 @@ import java.util.Set;
 
 import static java.util.Objects.*;
 
-// todo: START here
-
 public class ChatContract implements Contract {
 
     private final static Logger log = LoggerFactory.getLogger(ChatContract.class);
