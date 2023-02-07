@@ -26,15 +26,9 @@ public class ChatContract implements Contract {
     public static class Create implements Command { }
     public static class Update implements Command { }
 
-//    @Override
-//    public boolean isRelevant(@NotNull ContractState state, @NotNull Set<? extends PublicKey> myKeys) {
-//        return Contract.super.isRelevant(state, myKeys);
-//    }
-
     @Override
     public void verify(UtxoLedgerTransaction transaction) {
 
-//        Command command = requireNonNull( transaction.getCommands().get(0), "Require a single command");  // this doesn't ensure there is one command
         requireThat( transaction.getCommands().size() == 1, "Require a single command.");
         Command command = transaction.getCommands().get(0);
 
