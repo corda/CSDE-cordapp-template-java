@@ -2,10 +2,10 @@ package com.r3.developers.csdetemplate.utxoexample.workflows;
 
 import com.r3.developers.csdetemplate.utxoexample.contracts.ChatContract;
 import com.r3.developers.csdetemplate.utxoexample.states.ChatState;
+import net.corda.v5.application.flows.ClientRequestBody;
+import net.corda.v5.application.flows.ClientStartableFlow;
 import net.corda.v5.application.flows.CordaInject;
 import net.corda.v5.application.flows.FlowEngine;
-import net.corda.v5.application.flows.RPCRequestData;
-import net.corda.v5.application.flows.RPCStartableFlow;
 import net.corda.v5.application.marshalling.JsonMarshallingService;
 import net.corda.v5.application.membership.MemberLookup;
 import net.corda.v5.base.annotations.Suspendable;
@@ -26,7 +26,7 @@ import static java.util.Objects.*;
 import static java.util.stream.Collectors.toList;
 
 // See Chat CorDapp Design section of the getting started docs for a description of this flow.
-public class UpdateChatFlow implements RPCStartableFlow {
+public class UpdateChatFlow implements ClientStartableFlow {
 
     private final static Logger log = LoggerFactory.getLogger(UpdateChatFlow.class);
 
@@ -46,7 +46,7 @@ public class UpdateChatFlow implements RPCStartableFlow {
 
     @Suspendable
     @Override
-    public String call(RPCRequestData requestBody) {
+    public String call(ClientRequestBody requestBody) {
 
         log.info("UpdateNewChatFlow.call() called");
 
@@ -87,10 +87,10 @@ public class UpdateChatFlow implements RPCStartableFlow {
                     .addCommand(new ChatContract.Update())
                     .addSignatories(newChatState.getParticipants());
 
-            // Convert the transaction builder to a UtxoSignedTransaction and sign with this Vnode's first Ledger key.
-            // Note, toSignedTransaction() is currently a placeholder method, hence being marked as deprecated.
-            @SuppressWarnings("DEPRECATION")
-            UtxoSignedTransaction signedTransaction = txBuilder.toSignedTransaction(myInfo.getLedgerKeys().get(0));
+            // Convert the transaction builder to a UTXOSignedTransaction. Verifies the content of the
+            // UtxoTransactionBuilder and signs the transaction with any required signatories that belong to
+            // the current node.
+            UtxoSignedTransaction signedTransaction = txBuilder.toSignedTransaction();
 
             // Call FinalizeChatSubFlow which will finalise the transaction.
             // If successful the flow will return a String of the created transaction id,
@@ -112,7 +112,7 @@ RequestBody for triggering the flow via http-rpc:
 {
     "clientRequestId": "update-1",
     "flowClassName": "com.r3.developers.csdetemplate.utxoexample.workflows.UpdateChatFlow",
-    "requestData": {
+    "requestBody": {
         "id":" ** fill in id **",
         "message": "How are you today?"
         }

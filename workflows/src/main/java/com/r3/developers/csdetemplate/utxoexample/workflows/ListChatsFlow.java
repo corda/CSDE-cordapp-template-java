@@ -1,9 +1,9 @@
 package com.r3.developers.csdetemplate.utxoexample.workflows;
 
 import com.r3.developers.csdetemplate.utxoexample.states.ChatState;
+import net.corda.v5.application.flows.ClientRequestBody;
+import net.corda.v5.application.flows.ClientStartableFlow;
 import net.corda.v5.application.flows.CordaInject;
-import net.corda.v5.application.flows.RPCRequestData;
-import net.corda.v5.application.flows.RPCStartableFlow;
 import net.corda.v5.application.marshalling.JsonMarshallingService;
 import net.corda.v5.base.annotations.Suspendable;
 import net.corda.v5.ledger.utxo.StateAndRef;
@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 // See Chat CorDapp Design section of the getting started docs for a description of this flow.
-public class ListChatsFlow implements RPCStartableFlow{
+public class ListChatsFlow implements ClientStartableFlow {
 
     private final static Logger log = LoggerFactory.getLogger(ListChatsFlow.class);
 
@@ -28,7 +28,7 @@ public class ListChatsFlow implements RPCStartableFlow{
 
     @Suspendable
     @Override
-    public String call(RPCRequestData requestBody) {
+    public String call(ClientRequestBody requestBody) {
 
         log.info("ListChatsFlow.call() called");
 
@@ -53,6 +53,6 @@ RequestBody for triggering the flow via http-rpc:
 {
     "clientRequestId": "list-1",
     "flowClassName": "com.r3.developers.csdetemplate.utxoexample.workflows.ListChatsFlow",
-    "requestData": {}
+    "requestBody": {}
 }
 */

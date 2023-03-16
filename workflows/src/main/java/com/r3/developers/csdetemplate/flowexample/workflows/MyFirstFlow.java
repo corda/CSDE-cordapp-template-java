@@ -7,7 +7,6 @@ import net.corda.v5.application.messaging.FlowMessaging;
 import net.corda.v5.application.messaging.FlowSession;
 import net.corda.v5.base.annotations.Suspendable;
 import net.corda.v5.base.types.MemberX500Name;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +15,7 @@ import org.slf4j.LoggerFactory;
 // to link the two sides of the flow together they need to have the same protocol.
 @InitiatingFlow(protocol = "my-first-flow")
 // MyFirstFlow should inherit from RPCStartableFlow, which tells Corda it can be started via an RPC call
-public class MyFirstFlow implements RPCStartableFlow {
+public class MyFirstFlow implements ClientStartableFlow {
 
     // Log messages from the flows for debugging.
     private final static Logger log = LoggerFactory.getLogger(MyFirstFlow.class);
@@ -43,10 +42,10 @@ public class MyFirstFlow implements RPCStartableFlow {
     // When a flow is invoked its call() method is called.
     // Call() methods must be marked as @Suspendable, this allows Corda to pause mid-execution to wait
     // for a response from the other flows and services.
-    @NotNull
+
     @Suspendable
     @Override
-    public String call(RPCRequestData requestBody) {
+    public String call(ClientRequestBody requestBody) {
 
         // Follow what happens in the console or logs.
         log.info("MFF: MyFirstFlow.call() called");

@@ -4,18 +4,10 @@ import com.r3.developers.csdetemplate.utxoexample.states.ChatState;
 import net.corda.v5.base.exceptions.CordaRuntimeException;
 import net.corda.v5.ledger.utxo.Command;
 import net.corda.v5.ledger.utxo.Contract;
-import net.corda.v5.ledger.utxo.ContractState;
-import net.corda.v5.ledger.utxo.StateAndRef;
 import net.corda.v5.ledger.utxo.transaction.UtxoLedgerTransaction;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.security.PublicKey;
-import java.util.Objects;
-import java.util.Set;
-
-import static java.util.Objects.*;
 
 public class ChatContract implements Contract {
 

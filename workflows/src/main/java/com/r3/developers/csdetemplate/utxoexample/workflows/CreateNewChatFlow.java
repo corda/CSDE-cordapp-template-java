@@ -28,7 +28,7 @@ import java.util.UUID;
 import static java.util.Objects.*;
 
 // See Chat CorDapp Design section of the getting started docs for a description of this flow.
-public class CreateNewChatFlow implements RPCStartableFlow {
+public class CreateNewChatFlow implements ClientStartableFlow {
 
     private final static Logger log = LoggerFactory.getLogger(CreateNewChatFlow.class);
 
@@ -52,7 +52,7 @@ public class CreateNewChatFlow implements RPCStartableFlow {
 
     @Suspendable
     @Override
-    public String call( RPCRequestData requestBody) {
+    public String call( ClientRequestBody requestBody) {
 
         log.info("CreateNewChatFlow.call() called");
 
@@ -101,10 +101,10 @@ public class CreateNewChatFlow implements RPCStartableFlow {
                     .addCommand(new ChatContract.Create())
                     .addSignatories(chatState.getParticipants());
 
-            // Convert the transaction builder to a UTXOSignedTransaction and sign with this Vnode's first Ledger key.
-            // Note, toSignedTransaction() is currently a placeholder method, hence being marked as deprecated.
-            @SuppressWarnings("DEPRECATION")
-            UtxoSignedTransaction signedTransaction = txBuilder.toSignedTransaction(myInfo.getLedgerKeys().get(0));
+            // Convert the transaction builder to a UTXOSignedTransaction. Verifies the content of the
+            // UtxoTransactionBuilder and signs the transaction with any required signatories that belong to
+            // the current node.
+            UtxoSignedTransaction signedTransaction = txBuilder.toSignedTransaction();
 
             // Call FinalizeChatSubFlow which will finalise the transaction.
             // If successful the flow will return a String of the created transaction id,
@@ -124,7 +124,7 @@ RequestBody for triggering the flow via http-rpc:
 {
     "clientRequestId": "create-1",
     "flowClassName": "com.r3.developers.csdetemplate.utxoexample.workflows.CreateNewChatFlow",
-    "requestData": {
+    "requestBody": {
         "chatName":"Chat with Bob",
         "otherMember":"CN=Bob, OU=Test Dept, O=R3, L=London, C=GB",
         "message": "Hello Bob"

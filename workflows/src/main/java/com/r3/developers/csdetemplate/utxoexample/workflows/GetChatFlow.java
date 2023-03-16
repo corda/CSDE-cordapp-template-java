@@ -1,9 +1,9 @@
 package com.r3.developers.csdetemplate.utxoexample.workflows;
 
 import com.r3.developers.csdetemplate.utxoexample.states.ChatState;
+import net.corda.v5.application.flows.ClientRequestBody;
+import net.corda.v5.application.flows.ClientStartableFlow;
 import net.corda.v5.application.flows.CordaInject;
-import net.corda.v5.application.flows.RPCRequestData;
-import net.corda.v5.application.flows.RPCStartableFlow;
 import net.corda.v5.application.marshalling.JsonMarshallingService;
 import net.corda.v5.base.annotations.Suspendable;
 import net.corda.v5.base.exceptions.CordaRuntimeException;
@@ -19,7 +19,7 @@ import static java.util.Objects.*;
 import static java.util.stream.Collectors.toList;
 
 // See Chat CorDapp Design section of the getting started docs for a description of this flow.
-public class GetChatFlow implements RPCStartableFlow {
+public class GetChatFlow implements ClientStartableFlow {
 
     private final static Logger log = LoggerFactory.getLogger(GetChatFlow.class);
 
@@ -32,7 +32,7 @@ public class GetChatFlow implements RPCStartableFlow {
 
     @Override
     @Suspendable
-    public String call(RPCRequestData requestBody)  {
+    public String call(ClientRequestBody requestBody)  {
 
         // Obtain the deserialized input arguments to the flow from the requestBody.
         GetChatFlowArgs flowArgs = requestBody.getRequestBodyAs(jsonMarshallingService, GetChatFlowArgs.class);
@@ -70,7 +70,7 @@ public class GetChatFlow implements RPCStartableFlow {
         while (moreBackchain) {
 
             // Obtain the transaction id from the current StateAndRef and fetch the transaction from the vault.
-            SecureHash transactionId = currentStateAndRef.getRef().getTransactionHash();
+            SecureHash transactionId = currentStateAndRef.getRef().getTransactionId();
             UtxoLedgerTransaction transaction = requireNonNull(
                  ledgerService.findLedgerTransaction(transactionId),
                  "Transaction " +  transactionId + " not found."
@@ -110,7 +110,7 @@ RequestBody for triggering the flow via http-rpc:
 {
     "clientRequestId": "get-1",
     "flowClassName": "com.r3.developers.csdetemplate.utxoexample.workflows.GetChatFlow",
-    "requestData": {
+    "requestBody": {
         "id":"** fill in id **",
         "numberOfRecords":"4"
     }
