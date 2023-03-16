@@ -11,11 +11,13 @@ The CSDE is obtained by cloning this CSDE-Cordapp-Template-java to your local ma
 
  - A base Gradle configuration which brings in the dependencies you need to write and test a Corda 5 Cordapp.
 
- - A set of Gradle helper tasks which speed up and simplify the development and deployment process. (these are effectively wrappers over the Corda-CLI)
+ - A set of Gradle helper tasks which speed up and simplify the development and deployment process. 
 
  - Debug configuration for debugging a local Corda cluster.
 
  - The MyFirstFlow code which forms the basis of this getting started documentation.
+
+- A UTXO example in package com.r3.developers.csdetemplate.utxoexample packages
 
  - Ability to configure the Members of the Local corda Network.
 
