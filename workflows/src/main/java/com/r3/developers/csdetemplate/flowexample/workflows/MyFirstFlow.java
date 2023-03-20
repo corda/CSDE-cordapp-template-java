@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 // MyFirstFlow is an initiating flow, it's corresponding responder flow is called MyFirstFlowResponder (defined below)
 // to link the two sides of the flow together they need to have the same protocol.
 @InitiatingFlow(protocol = "my-first-flow")
-// MyFirstFlow should inherit from RPCStartableFlow, which tells Corda it can be started via an RPC call
+// MyFirstFlow should inherit from ClientStartableFlow, which tells Corda it can be started via an RPC call
 public class MyFirstFlow implements ClientStartableFlow {
 
     // Log messages from the flows for debugging.
@@ -79,8 +79,7 @@ public class MyFirstFlow implements ClientStartableFlow {
         Message response = session.receive(Message.class);
 
         // The return value of a RPCStartableFlow must always be a String. This will be passed
-        // back as the REST RPC response when the status of the flow is queried on Corda, or as the return
-        // value from the flow when testing using the simulator.
+        // back as the REST RPC response when the status of the flow is queried on Corda.
         return response.getMessage();
     }
 }
@@ -90,7 +89,7 @@ RequestBody for triggering the flow via http-rpc:
 {
     "clientRequestId": "r1",
     "flowClassName": "com.r3.developers.csdetemplate.flowexample.workflows.MyFirstFlow",
-    "requestData": {
+    "requestBody": {
         "otherMember":"CN=Bob, OU=Test Dept, O=R3, L=London, C=GB"
         }
 }
