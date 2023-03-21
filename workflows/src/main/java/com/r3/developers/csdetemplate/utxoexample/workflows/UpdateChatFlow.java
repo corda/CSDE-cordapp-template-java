@@ -108,7 +108,7 @@ public class UpdateChatFlow implements ClientStartableFlow {
 }
 
 /*
-RequestBody for triggering the flow via http-rpc:
+RequestBody for triggering the flow via REST:
 {
     "clientRequestId": "update-1",
     "flowClassName": "com.r3.developers.csdetemplate.utxoexample.workflows.UpdateChatFlow",
