@@ -29,9 +29,9 @@ public class MyFirstFlowResponder implements ResponderFlow {
 
     // Responder flows are invoked when an initiating flow makes a call via a session set up with the virtual
     // node hosting the responder flow. When a responder flow is invoked its call() method is called.
-    // Call() methods must be marked as @Suspendable, this allows Corda to pause mid-execution to wait
+    // call() methods must be marked as @Suspendable, this allows Corda to pause mid-execution to wait
     // for a response from the other flows and services.
-    // The Call method has the flow session passed in as a parameter by Corda so the session is available to
+    // The call() method has the flow session passed in as a parameter by Corda so the session is available to
     // responder flow code, you don't need to inject the FlowMessaging service.
     @Suspendable
     @Override
