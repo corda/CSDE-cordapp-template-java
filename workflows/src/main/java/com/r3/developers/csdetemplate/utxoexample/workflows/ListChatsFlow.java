@@ -49,7 +49,7 @@ public class ListChatsFlow implements ClientStartableFlow {
 }
 
 /*
-RequestBody for triggering the flow via http-rpc:
+RequestBody for triggering the flow via REST:
 {
     "clientRequestId": "list-1",
     "flowClassName": "com.r3.developers.csdetemplate.utxoexample.workflows.ListChatsFlow",
