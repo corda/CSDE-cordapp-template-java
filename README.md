@@ -105,7 +105,7 @@ After a few back and forth of the messaging, you can view entire chat history by
     "clientRequestId": "get-1",
     "flowClassName": "com.r3.developers.csdetemplate.utxoexample.workflows.GetChatFlow",
     "requestBody": {
-        "id":"81340d4c-8936-406d-b811-02b08fdb950c",
+        "id":" ** fill in id **",
         "numberOfRecords":"4"
     }
 }
