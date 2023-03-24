@@ -89,8 +89,8 @@ this message will be recorded as a message from Alice, vice versa. And the id fi
 {
     "clientRequestId": "update-1",
     "flowClassName": "com.r3.developers.csdetemplate.utxoexample.workflows.UpdateChatFlow",
-    "requestData": {
-        "id":"** fill in id **",
+    "requestBody": {
+        "id":" ** fill in id **",
         "message": "How are you today?"
         }
 }
@@ -104,8 +104,8 @@ After a few back and forth of the messaging, you can view entire chat history by
 {
     "clientRequestId": "get-1",
     "flowClassName": "com.r3.developers.csdetemplate.utxoexample.workflows.GetChatFlow",
-    "requestData": {
-        "id":"** fill in id **",
+    "requestBody": {
+        "id":"81340d4c-8936-406d-b811-02b08fdb950c",
         "numberOfRecords":"4"
     }
 }
