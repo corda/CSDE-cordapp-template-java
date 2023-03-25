@@ -1,4 +1,4 @@
-# CSDE-cordapp-template-Java
+# CSDE-cordapp-template-java
 
 
 To help make the process of prototyping CorDapps on Corda 5 beta 1.1 release more straight forward we have developed the Cordapp Standard Development Environment (CSDE).
