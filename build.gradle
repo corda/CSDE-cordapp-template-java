@@ -17,9 +17,18 @@ allprojects {
 
     csde {
         cordaClusterURL = "https://localhost:8888"
+        networkConfigFile = "config/static-network-config.json"
+        corDappCpiName = "MyCorDapp"
+        notaryCpiName = "NotaryServer"
+        cordaRpcUser = "admin"
+        cordaRpcPasswd ="admin"
+        csdeWorkspaceDir = "workspace"
+        notaryVersion = cordaNotaryPluginsVersion
         combinedWorkerVersion = "5.0.0.0-Gecko1.0"
-        cordaNotaryVersion = cordaNotaryPluginsVersion
         postgresJdbcVersion = "42.4.3"
+        cordaDbContainerName = "CSDEpostgresql"
+        cordaBinDir = "${System.getProperty("user.home")}/.corda/corda5"
+        cordaCliBinDir = "${System.getProperty("user.home")}/.corda/cli"
     }
 
     // Declare the set of Java compiler options we need to build a CorDapp.
