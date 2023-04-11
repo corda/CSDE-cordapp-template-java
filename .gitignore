@@ -86,3 +86,6 @@ workspace/**
 #*.pfx
 #CPIFileStatus*.json
 #GroupPolicy.json
+
+# Ignore temporary data files
+*.dat
