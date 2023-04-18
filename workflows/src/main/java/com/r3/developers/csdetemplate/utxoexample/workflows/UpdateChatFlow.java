@@ -79,8 +79,8 @@ public class UpdateChatFlow implements ClientStartableFlow {
             ChatState newChatState = state.updateMessage(myInfo.getName(), flowArgs.getMessage());
 
             // Use UTXOTransactionBuilder to build up the draft transaction.
-            UtxoTransactionBuilder txBuilder = ledgerService.getTransactionBuilder()
-                    .setNotary(chatStateAndRef.getState().getNotary())
+            UtxoTransactionBuilder txBuilder = ledgerService.createTransactionBuilder()
+                    .setNotary(chatStateAndRef.getState().getNotaryName())
                     .setTimeWindowBetween(Instant.now(), Instant.now().plusMillis(Duration.ofDays(1).toMillis()))
                     .addOutputState(newChatState)
                     .addInputState(chatStateAndRef.getRef())

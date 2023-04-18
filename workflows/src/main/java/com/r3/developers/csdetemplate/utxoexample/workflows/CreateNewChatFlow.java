@@ -9,7 +9,6 @@ import net.corda.v5.base.annotations.Suspendable;
 import net.corda.v5.base.exceptions.CordaRuntimeException;
 import net.corda.v5.base.types.MemberX500Name;
 import net.corda.v5.ledger.common.NotaryLookup;
-import net.corda.v5.ledger.common.Party;
 import net.corda.v5.ledger.utxo.UtxoLedgerService;
 import net.corda.v5.ledger.utxo.transaction.UtxoSignedTransaction;
 import net.corda.v5.ledger.utxo.transaction.UtxoTransactionBuilder;
@@ -78,24 +77,10 @@ public class CreateNewChatFlow implements ClientStartableFlow {
 
             // Obtain the Notary name and public key.
             NotaryInfo notary = notaryLookup.getNotaryServices().iterator().next();
-            PublicKey notaryKey = null;
-            for(MemberInfo memberInfo: memberLookup.lookup()){
-                if(Objects.equals(
-                        memberInfo.getMemberProvidedContext().get("corda.notary.service.name"),
-                        notary.getName().toString())) {
-                    notaryKey = memberInfo.getLedgerKeys().get(0);
-                    break;
-                }
-            }
-            // Note, in Java CorDapps only unchecked RuntimeExceptions can be thrown not
-            // declared checked exceptions as this changes the method signature and breaks override.
-            if(notaryKey == null) {
-                throw new CordaRuntimeException("No notary PublicKey found");
-            }
 
             // Use UTXOTransactionBuilder to build up the draft transaction.
-            UtxoTransactionBuilder txBuilder = ledgerService.getTransactionBuilder()
-                    .setNotary(new Party(notary.getName(), notaryKey))
+            UtxoTransactionBuilder txBuilder = ledgerService.createTransactionBuilder()
+                    .setNotary(notary.getName())
                     .setTimeWindowBetween(Instant.now(), Instant.now().plusMillis(Duration.ofDays(1).toMillis()))
                     .addOutputState(chatState)
                     .addCommand(new ChatContract.Create())
