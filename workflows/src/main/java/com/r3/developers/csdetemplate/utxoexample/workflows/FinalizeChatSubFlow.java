@@ -54,7 +54,7 @@ public class FinalizeChatSubFlow implements SubFlow<String> {
             UtxoSignedTransaction finalizedSignedTransaction = ledgerService.finalize(
                     signedTransaction,
                     sessionsList
-            );
+            ).getTransaction();
 
             result = finalizedSignedTransaction.getId().toString();
             log.info("Success! Response: " + result);
