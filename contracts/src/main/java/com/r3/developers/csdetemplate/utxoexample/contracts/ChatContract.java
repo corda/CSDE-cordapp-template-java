@@ -18,6 +18,7 @@ public class ChatContract implements Contract {
     static final String REQUIRE_SINGLE_COMMAND = "Require a single command.";
     static final String UNKNOWN_COMMAND = "Unsupported command";
     static final String OUTPUT_STATE_SHOULD_ONLY_HAVE_TWO_PARTICIPANTS = "The output state should have two and only two participants.";
+    static final String TRANSACTION_SHOULD_BE_SIGNED_BY_ALL_PARTICIPANTS = "The transaction should have been signed by both participants.";
 
     static final String CREATE_COMMAND_SHOULD_HAVE_NO_INPUT_STATES = "When command is Create there should be no input states.";
     static final String CREATE_COMMAND_SHOULD_HAVE_ONLY_ONE_OUTPUT_STATE = "When command is Create there should be one and only one output state.";
@@ -40,6 +41,7 @@ public class ChatContract implements Contract {
         ChatState output = transaction.getOutputStates(ChatState.class).get(0);
 
         requireThat(output.getParticipants().size() == 2, OUTPUT_STATE_SHOULD_ONLY_HAVE_TWO_PARTICIPANTS);
+        requireThat(transaction.getSignatories().containsAll(output.getParticipants()), TRANSACTION_SHOULD_BE_SIGNED_BY_ALL_PARTICIPANTS);
 
         if(command.getClass() == Create.class) {
             requireThat(transaction.getInputContractStates().isEmpty(), CREATE_COMMAND_SHOULD_HAVE_NO_INPUT_STATES);

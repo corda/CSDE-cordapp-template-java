@@ -29,6 +29,7 @@ public class ChatContractCreateCommandTest extends ContractTest {
                 .createTransactionBuilder()
                 .addOutputState(outputChatState)
                 .addCommand(new ChatContract.Create())
+                .addSignatories(outputChatState.participants)
                 .toSignedTransaction();
         assertVerifies(transaction);
     }
@@ -51,13 +52,14 @@ public class ChatContractCreateCommandTest extends ContractTest {
                 .createTransactionBuilder()
                 .addOutputState(outputChatState)
                 .addCommand(new MyDummyCommand())
+                .addSignatories(outputChatState.participants)
                 .toSignedTransaction();
 
         assertFailsWith(transaction, UNKNOWN_COMMAND);
     }
 
     @Test
-    public void outputStateOnlyCannotHaveZeroParticipants() {
+    public void outputStateCannotHaveZeroParticipants() {
         ChatState state = new ChatState(
                 UUID.randomUUID(),
                 "myChatName",
@@ -74,7 +76,7 @@ public class ChatContractCreateCommandTest extends ContractTest {
     }
 
     @Test
-    public void outputStateOnlyCannotHaveOneParticipant() {
+    public void outputStateCannotHaveOneParticipant() {
         ChatState state = new ChatState(
                 UUID.randomUUID(),
                 "myChatName",
@@ -91,7 +93,7 @@ public class ChatContractCreateCommandTest extends ContractTest {
     }
 
     @Test
-    public void outputStateOnlyCannotHaveThreeParticipants() {
+    public void outputStateCannotHaveThreeParticipants() {
         ChatState state = new ChatState(
                 UUID.randomUUID(),
                 "myChatName",
@@ -108,6 +110,27 @@ public class ChatContractCreateCommandTest extends ContractTest {
     }
 
     @Test
+    public void outputStateMustBeSigned() {
+        UtxoSignedTransaction transaction = getLedgerService()
+                .createTransactionBuilder()
+                .addOutputState(outputChatState)
+                .addCommand(new ChatContract.Create())
+                .toSignedTransaction();
+        assertFailsWith(transaction, "Failed requirement: " + TRANSACTION_SHOULD_BE_SIGNED_BY_ALL_PARTICIPANTS);
+    }
+
+    @Test
+    public void outputStateCannotBeSignedByOnlyOneParticipant() {
+        UtxoSignedTransaction transaction = getLedgerService()
+                .createTransactionBuilder()
+                .addOutputState(outputChatState)
+                .addCommand(new ChatContract.Create())
+                .addSignatories(outputChatState.participants.get(0))
+                .toSignedTransaction();
+        assertFailsWith(transaction, "Failed requirement: " + TRANSACTION_SHOULD_BE_SIGNED_BY_ALL_PARTICIPANTS);
+    }
+
+    @Test
     public void shouldNotIncludeInputState() {
         happyPath(); // generate an existing state to search for
         StateAndRef<ChatState> existingState = getLedgerService().findUnconsumedStatesByType(ChatState.class).get(0); // doesn't matter which as this will fail validation
@@ -116,6 +139,7 @@ public class ChatContractCreateCommandTest extends ContractTest {
                 .addInputState(existingState.getRef())
                 .addOutputState(outputChatState)
                 .addCommand(new ChatContract.Create())
+                .addSignatories(outputChatState.participants)
                 .toSignedTransaction();
         assertFailsWith(transaction, "Failed requirement: " + CREATE_COMMAND_SHOULD_HAVE_NO_INPUT_STATES);
     }
@@ -127,6 +151,7 @@ public class ChatContractCreateCommandTest extends ContractTest {
                 .addOutputState(outputChatState)
                 .addOutputState(outputChatState)
                 .addCommand(new ChatContract.Create())
+                .addSignatories(outputChatState.participants)
                 .toSignedTransaction();
         assertFailsWith(transaction, "Failed requirement: " + CREATE_COMMAND_SHOULD_HAVE_ONLY_ONE_OUTPUT_STATE);
     }
