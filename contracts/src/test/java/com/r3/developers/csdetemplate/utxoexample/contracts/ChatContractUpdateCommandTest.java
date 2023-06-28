@@ -13,6 +13,7 @@ import static com.r3.developers.csdetemplate.utxoexample.contracts.ChatContract.
 
 public class ChatContractUpdateCommandTest extends ContractTest {
 
+    @SuppressWarnings("unchecked")
     private StateAndRef<ChatState> createInitialChatState() {
         ChatState outputChatState = new ChatContractCreateCommandTest().outputChatState;
         UtxoSignedTransaction transaction = getLedgerService()
