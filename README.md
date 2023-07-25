@@ -21,6 +21,7 @@ The CSDE is obtained by cloning this CSDE-Cordapp-Template-Java repository to yo
 
 To find out how to use the CSDE, please refer to the *Getting Started Using the CSDE* subsection within the *Developing Applications* section in the latest Corda 5 documentation at https://docs.r3.com/
 
+
 ## Chat app
 We have built a simple one to one chat app to demo some functionalities of the next gen Corda platform.
 
