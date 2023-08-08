@@ -1,4 +1,5 @@
 import static org.gradle.api.JavaVersion.VERSION_17
+import static org.gradle.jvm.toolchain.JavaLanguageVersion.of
 
 plugins {
     id 'org.jetbrains.kotlin.jvm'
@@ -12,8 +13,6 @@ plugins {
 allprojects {
     group 'com.r3.developers.csdetemplate'
     version '1.0-SNAPSHOT'
-
-    def javaVersion = VERSION_17
 
     // Configure the CSDE
     csde {
@@ -34,6 +33,13 @@ allprojects {
         cordaCliBinDir = "${System.getProperty("user.home")}/.corda/cli"
         cpiUploadTimeout = cpiUploadDefault
         cordaProcessorTimeout = processorTimeout
+    }
+
+    java {
+        toolchain {
+            languageVersion = of(VERSION_17.majorVersion.toInteger())
+        }
+        withSourcesJar()
     }
 
     // Declare the set of Java compiler options we need to build a CorDapp.
@@ -78,8 +84,7 @@ publishing {
             artifactId "corda-CSDE-java-sample"
             groupId project.group
             artifact jar
-    }
-
+        }
    }
 }
 
