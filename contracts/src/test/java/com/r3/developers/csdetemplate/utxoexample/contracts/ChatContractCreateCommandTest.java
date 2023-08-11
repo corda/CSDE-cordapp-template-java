@@ -1,10 +1,13 @@
 package com.r3.developers.csdetemplate.utxoexample.contracts;
 
 import com.r3.corda.ledger.utxo.testing.ContractTest;
+import com.r3.corda.ledger.utxo.testing.VerificationFailureException;
 import com.r3.developers.csdetemplate.utxoexample.states.ChatState;
+import net.corda.v5.crypto.SecureHash;
 import net.corda.v5.ledger.utxo.Command;
 import net.corda.v5.ledger.utxo.StateAndRef;
 import net.corda.v5.ledger.utxo.transaction.UtxoSignedTransaction;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -12,6 +15,8 @@ import java.util.UUID;
 
 import static com.r3.developers.csdetemplate.utxoexample.contracts.ChatContract.*;
 import static java.util.Collections.emptyList;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ChatContractCreateCommandTest extends ContractTest {
 
@@ -32,6 +37,38 @@ public class ChatContractCreateCommandTest extends ContractTest {
                 .addSignatories(outputChatState.participants)
                 .toSignedTransaction();
         assertVerifies(transaction);
+    }
+
+    @Test
+    public void addAttachmentsNotSupported() {
+        SecureHash secureHash = new SecureHash() {
+            @NotNull
+            @Override
+            public String getAlgorithm() {
+                return null;
+            }
+
+            @NotNull
+            @Override
+            public String toHexString() {
+                return null;
+            }
+        };
+
+        Exception exception = assertThrows(UnsupportedOperationException.class, () -> {
+            UtxoSignedTransaction transaction = getLedgerService()
+                    .createTransactionBuilder()
+                    .addAttachment(secureHash)
+                    .addOutputState(outputChatState)
+                    .addCommand(new ChatContract.Create())
+                    .addSignatories(outputChatState.participants)
+                    .toSignedTransaction();
+        });
+
+        String expectedMessage = "This method is not implemented for the mock ledger";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
     }
 
     @Test
