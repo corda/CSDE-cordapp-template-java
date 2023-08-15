@@ -33,7 +33,7 @@ allprojects {
         cordaCliBinDir = "${System.getProperty("user.home")}/.corda/cli"
         cpiUploadTimeout = cpiUploadDefault
         cordaProcessorTimeout = processorTimeout
-        vNodeVerificationTimeout = vNodeVerificationTimeoutDefault
+        vnodeRegistrationTimeout = vnodeRegistrationTimeoutDefault
     }
 
     java {
