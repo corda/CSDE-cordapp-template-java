@@ -45,9 +45,9 @@ public class ApplesFlowDriverTests {
     void setup() {
         Set<MemberX500Name> nodes = new HashSet<>(Arrays.asList(alice, bob));
         driver.run(
-            dsl -> dsl.startNodes(nodes)
-                .stream().filter(it -> it.getCpiIdentifier().getName().equals("workflows"))
-                .forEach(it -> vNodes.put(it.getHoldingIdentity().getX500Name(), it))
+                dsl -> dsl.startNodes(nodes)
+                        .stream().filter(it -> it.getCpiIdentifier().getName().equals("workflows"))
+                        .forEach(it -> vNodes.put(it.getHoldingIdentity().getX500Name(), it))
         );
 
         if (vNodes.isEmpty()) fail("Failed to populate vNodes");
@@ -79,16 +79,16 @@ public class ApplesFlowDriverTests {
     }
 
     private void packageApples(String description, int weight, MemberX500Name packer) {
-        PackageApplesRequest packageApplesFlowArgs = new PackageApplesRequest( description, weight);
+        PackageApplesRequest packageApplesFlowArgs = new PackageApplesRequest(description, weight);
         driver.run(dsl ->
-            dsl.runFlow(vNodes.get(packer), PackageApplesFlow.class, () -> jsonMapper.writeValueAsString(packageApplesFlowArgs))
+                dsl.runFlow(vNodes.get(packer), PackageApplesFlow.class, () -> jsonMapper.writeValueAsString(packageApplesFlowArgs))
         );
     }
 
     private UUID createAndIssueAppleStamp(String description, MemberX500Name member, MemberX500Name issuer) {
-        CreateAndIssueAppleStampRequest createAndIssueFlowArgs = new CreateAndIssueAppleStampRequest( description, member);
+        CreateAndIssueAppleStampRequest createAndIssueFlowArgs = new CreateAndIssueAppleStampRequest(description, member);
         String result = driver.let(dsl ->
-            dsl.runFlow(vNodes.get(issuer), CreateAndIssueAppleStampFlow.class, () -> jsonMapper.writeValueAsString(createAndIssueFlowArgs))
+                dsl.runFlow(vNodes.get(issuer), CreateAndIssueAppleStampFlow.class, () -> jsonMapper.writeValueAsString(createAndIssueFlowArgs))
         );
         return UUID.fromString(result);
     }
