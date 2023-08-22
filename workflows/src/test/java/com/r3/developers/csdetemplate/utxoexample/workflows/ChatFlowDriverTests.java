@@ -83,9 +83,9 @@ public class ChatFlowDriverTests {
 
     @Test
     void test_that_CreateNewChatFlow_returns_correct_message() {
-        CreateNewChatFlowArgs chartFlowArgs = new CreateNewChatFlowArgs("myChatName", "Hello Bob, from Alice", bob.toString());
+        CreateNewChatFlowArgs chatFlowArgs = new CreateNewChatFlowArgs("myChatName", "Hello Bob, from Alice", bob.toString());
         String result = driver.let(dsl ->
-                dsl.runFlow(vNodes.get(alice), CreateNewChatFlow.class, () -> jsonMapper.writeValueAsString(chartFlowArgs))
+                dsl.runFlow(vNodes.get(alice), CreateNewChatFlow.class, () -> jsonMapper.writeValueAsString(chatFlowArgs))
         );
         assertThat(result).contains(startOfTransactionId);
     }
@@ -175,7 +175,7 @@ public class ChatFlowDriverTests {
         String secondMessageExpectedValue = "Hello Bob, It's Alice again";
         UpdateChatFlowArgs aliceUpdatedMessageArgs = new UpdateChatFlowArgs(firstMessageId, secondMessageExpectedValue);
         driver.run(dsl ->
-            dsl.runFlow(vNodes.get(alice), UpdateChatFlow.class, () -> jsonMapper.writeValueAsString(aliceUpdatedMessageArgs))
+                dsl.runFlow(vNodes.get(alice), UpdateChatFlow.class, () -> jsonMapper.writeValueAsString(aliceUpdatedMessageArgs))
         );
 
         // Get the latest message and assert the message content is updated value
