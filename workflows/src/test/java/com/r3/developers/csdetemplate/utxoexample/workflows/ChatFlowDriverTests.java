@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.r3.developers.csdetemplate.serializers.MemberX500NameDeserializer;
-import com.r3.developers.csdetemplate.serializers.MemberX500NameSerializer;
+import com.r3.developers.serializers.MemberX500NameDeserializer;
+import com.r3.developers.serializers.MemberX500NameSerializer;
 import net.corda.testing.driver.AllTestsDriver;
 import net.corda.testing.driver.DriverNodes;
 import net.corda.v5.base.types.MemberX500Name;
@@ -23,14 +23,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class ChatFlowDriverTest {
+public class ChatFlowDriverTests {
     /**
      * Step 1.
      * Declare member identities needed for the tests
      * As well as any other data you want to share across tests
      */
 
-    private static final Logger logger = LoggerFactory.getLogger(ChatFlowDriverTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ChatFlowDriverTests.class);
     private static final MemberX500Name alice = MemberX500Name.parse("CN=Alice, OU=Application, O=R3, L=London, C=GB");
     private static final MemberX500Name bob = MemberX500Name.parse("CN=Bob, OU=Application, O=R3, L=London, C=GB");
     private static final MemberX500Name notary = MemberX500Name.parse("CN=Notary, OU=Application, O=R3, L=London, C=GB");

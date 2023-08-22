@@ -3,8 +3,8 @@ package com.r3.developers.csdetemplate.flowexample.workflows;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.r3.developers.csdetemplate.serializers.MemberX500NameDeserializer;
-import com.r3.developers.csdetemplate.serializers.MemberX500NameSerializer;
+import com.r3.developers.serializers.MemberX500NameDeserializer;
+import com.r3.developers.serializers.MemberX500NameSerializer;
 import net.corda.testing.driver.DriverNodes;
 import net.corda.testing.driver.EachTestDriver;
 import net.corda.v5.base.types.MemberX500Name;
@@ -18,7 +18,7 @@ import java.util.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-public class MyFirstFlowDriverTest {
+public class MyFirstFlowDriverTests {
 
     /**
      * Step 1.

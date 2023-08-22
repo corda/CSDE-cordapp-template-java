@@ -1,4 +1,4 @@
-package com.r3.developers.csdetemplate.serializers;
+package com.r3.developers.serializers;
 
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
