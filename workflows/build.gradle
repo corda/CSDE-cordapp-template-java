@@ -63,10 +63,10 @@ dependencies {
     testRuntimeOnly "net.corda:corda-driver-engine:$cordaDriverVersion"
     testRuntimeOnly files(configurations.archives.artifacts.files)
     testRuntimeOnly fileTree(dir: "${System.getProperty("user.home")}/$cordaBinariesDirectory/notaryServer", include: '*.cpb')
-
 }
 
 tasks.withType(Test).configureEach {
+    dependsOn('getNotaryServerCPB')
     doFirst {
         jvmArgs '--add-opens', 'java.base/java.lang=ALL-UNNAMED',
                 '--add-opens', 'java.base/java.lang.invoke=ALL-UNNAMED',
@@ -85,7 +85,6 @@ tasks.withType(Test).configureEach {
         systemProperty 'org.slf4j.simpleLogger.logFile', 'System.out'
         systemProperty 'org.slf4j.simpleLogger.log.org.apache.aries.spifly.BaseActivator', 'OFF'
     }
-    dependsOn('getNotaryServerCPB')
 }
 
 // The CordApp section.
