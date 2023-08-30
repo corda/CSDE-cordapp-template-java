@@ -73,7 +73,7 @@ class ApplesFlowDriverTests {
     void test_that_RedeemApplesFlow_is_successful() {
         UUID stampId = createAndIssueAppleStamp("Stamp # 0002", bob, alice);
         packageApples("Basket of apples # 0002", 350, alice);
-        RedeemApplesRequest redeemApplesFlowArgs = new RedeemApplesRequest(bob, stampId);
+        RedeemApplesRequest redeemApplesFlowArgs = new RedeemApplesRequest(bob, notary, stampId);
         driver.run(dsl ->
             dsl.runFlow(vNodes.get(alice), RedeemApplesFlow.class, () -> jsonMapper.writeValueAsString(redeemApplesFlowArgs))
         );
@@ -81,14 +81,14 @@ class ApplesFlowDriverTests {
     }
 
     private void packageApples(String description, int weight, MemberX500Name packer) {
-        PackageApplesRequest packageApplesFlowArgs = new PackageApplesRequest(description, weight);
+        PackageApplesRequest packageApplesFlowArgs = new PackageApplesRequest(description, weight, notary);
         driver.run(dsl ->
             dsl.runFlow(vNodes.get(packer), PackageApplesFlow.class, () -> jsonMapper.writeValueAsString(packageApplesFlowArgs))
         );
     }
 
     private UUID createAndIssueAppleStamp(String description, MemberX500Name member, MemberX500Name issuer) {
-        CreateAndIssueAppleStampRequest createAndIssueFlowArgs = new CreateAndIssueAppleStampRequest(description, member);
+        CreateAndIssueAppleStampRequest createAndIssueFlowArgs = new CreateAndIssueAppleStampRequest(description, member, notary);
         String result = driver.let(dsl ->
             dsl.runFlow(vNodes.get(issuer), CreateAndIssueAppleStampFlow.class, () -> jsonMapper.writeValueAsString(createAndIssueFlowArgs))
         );

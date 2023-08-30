@@ -17,7 +17,9 @@ import net.corda.v5.ledger.common.NotaryLookup;
 import net.corda.v5.ledger.utxo.StateAndRef;
 import net.corda.v5.ledger.utxo.UtxoLedgerService;
 import net.corda.v5.ledger.utxo.transaction.UtxoSignedTransaction;
+import net.corda.v5.membership.MemberInfo;
 import net.corda.v5.membership.NotaryInfo;
+import org.jetbrains.annotations.NotNull;
 import java.security.PublicKey;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -46,22 +48,31 @@ public class RedeemApplesFlow implements ClientStartableFlow {
 
     @Suspendable
     @Override
-    public String call(ClientRequestBody requestBody) {
+    @NotNull
+    public String call(@NotNull ClientRequestBody requestBody) {
 
         RedeemApplesRequest request = requestBody.getRequestBodyAs(jsonMarshallingService, RedeemApplesRequest.class);
         MemberX500Name buyerName = request.getBuyer();
         UUID stampId = request.getStampId();
 
         // Retrieve the notaries public key (this will change)
-        NotaryInfo notaryInfo = notaryLookup.getNotaryServices().iterator().next();
+        final NotaryInfo notaryInfo = notaryLookup.lookup(request.getNotary());
+        if (notaryInfo == null) {
+            throw new IllegalArgumentException("Notary " + request.getNotary() + " not found");
+        }
 
         PublicKey myKey = memberLookup.myInfo().getLedgerKeys().get(0);
 
-        PublicKey buyer;
-        try {
-            buyer = memberLookup.lookup(buyerName).getLedgerKeys().get(0);
-        } catch (Exception e) {
+        final MemberInfo buyerInfo = memberLookup.lookup(buyerName);
+        if (buyerInfo == null) {
             throw new IllegalArgumentException("The buyer does not exist within the network");
+        }
+
+        final PublicKey buyer;
+        try {
+            buyer = buyerInfo.getLedgerKeys().get(0);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Buyer " + buyerName + " has no ledger key");
         }
 
         StateAndRef<AppleStamp> appleStampStateAndRef;
