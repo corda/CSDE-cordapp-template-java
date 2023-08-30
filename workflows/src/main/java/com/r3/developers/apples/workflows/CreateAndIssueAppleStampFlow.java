@@ -15,7 +15,9 @@ import net.corda.v5.base.types.MemberX500Name;
 import net.corda.v5.ledger.common.NotaryLookup;
 import net.corda.v5.ledger.utxo.UtxoLedgerService;
 import net.corda.v5.ledger.utxo.transaction.UtxoSignedTransaction;
+import net.corda.v5.membership.MemberInfo;
 import net.corda.v5.membership.NotaryInfo;
+import org.jetbrains.annotations.NotNull;
 import java.security.PublicKey;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -44,21 +46,30 @@ public class CreateAndIssueAppleStampFlow implements ClientStartableFlow {
 
     @Suspendable
     @Override
-    public String call(ClientRequestBody requestBody) {
+    @NotNull
+    public String call(@NotNull ClientRequestBody requestBody) {
 
         CreateAndIssueAppleStampRequest request = requestBody.getRequestBodyAs(jsonMarshallingService, CreateAndIssueAppleStampRequest.class);
         String stampDescription = request.getStampDescription();
         MemberX500Name holderName = request.getHolder();
 
-        NotaryInfo notaryInfo = notaryLookup.getNotaryServices().iterator().next();
+        final NotaryInfo notaryInfo = notaryLookup.lookup(request.getNotary());
+        if (notaryInfo == null) {
+            throw new IllegalArgumentException("Notary " + request.getNotary() + " not found");
+        }
 
         PublicKey issuer = memberLookup.myInfo().getLedgerKeys().get(0);
 
-        PublicKey holder;
-        try {
-            holder = memberLookup.lookup(holderName).getLedgerKeys().get(0);
-        } catch (Exception e) {
+        final MemberInfo holderInfo = memberLookup.lookup(holderName);
+        if (holderInfo == null) {
             throw new IllegalArgumentException(String.format("The holder %s does not exist within the network", holderName));
+        }
+
+        final PublicKey holder;
+        try {
+            holder = holderInfo.getLedgerKeys().get(0);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(String.format("The holder %s has no ledger key", holderName));
         }
 
         AppleStamp newStamp = new AppleStamp(

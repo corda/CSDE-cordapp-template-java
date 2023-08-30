@@ -7,13 +7,15 @@ public class CreateAndIssueAppleStampRequest {
     private String stampDescription;
 
     private MemberX500Name holder;
+    private MemberX500Name notary;
 
     // The JSON Marshalling Service, which handles serialisation, needs this constructor.
     public CreateAndIssueAppleStampRequest() {}
 
-    public CreateAndIssueAppleStampRequest(String stampDescription, MemberX500Name holder) {
+    public CreateAndIssueAppleStampRequest(String stampDescription, MemberX500Name holder, MemberX500Name notary) {
         this.stampDescription = stampDescription;
         this.holder = holder;
+        this.notary = notary;
     }
 
     public String getStampDescription() {
@@ -22,5 +24,9 @@ public class CreateAndIssueAppleStampRequest {
 
     public MemberX500Name getHolder() {
         return holder;
+    }
+
+    public MemberX500Name getNotary() {
+        return notary;
     }
 }

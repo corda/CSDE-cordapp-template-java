@@ -7,6 +7,7 @@ import net.corda.v5.application.messaging.FlowSession;
 import net.corda.v5.base.annotations.Suspendable;
 import net.corda.v5.ledger.utxo.FinalizationResult;
 import net.corda.v5.ledger.utxo.UtxoLedgerService;
+import org.jetbrains.annotations.NotNull;
 
 @InitiatedBy(protocol = "create-and-issue-apple-stamp")
 public class CreateAndIssueAppleStampResponderFlow implements ResponderFlow {
@@ -16,7 +17,7 @@ public class CreateAndIssueAppleStampResponderFlow implements ResponderFlow {
 
     @Override
     @Suspendable
-    public void call(FlowSession session) {
+    public void call(@NotNull FlowSession session) {
         // Receive, verify, validate, sign and record the transaction sent from the initiator
         FinalizationResult transaction = utxoLedgerService.receiveFinality(session, _transaction -> {
             /*
