@@ -15,19 +15,19 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class ApplesFlowDriverTests {
+class ApplesFlowDriverTests {
 
     private static final Logger logger = LoggerFactory.getLogger(ApplesFlowDriverTests.class);
     private static final MemberX500Name alice = MemberX500Name.parse("CN=Alice, OU=Application, O=R3, L=London, C=GB");
     private static final MemberX500Name bob = MemberX500Name.parse("CN=Bob, OU=Application, O=R3, L=London, C=GB");
     private static final MemberX500Name notary = MemberX500Name.parse("CN=Notary, OU=Application, O=R3, L=London, C=GB");
-    private static final Map<MemberX500Name, VirtualNodeInfo> vNodes = new HashMap<>();
     private static final ObjectMapper jsonMapper;
 
     static {
@@ -38,27 +38,29 @@ public class ApplesFlowDriverTests {
         jsonMapper.registerModule(module);
     }
 
+    private Map<MemberX500Name, VirtualNodeInfo> vNodes;
+
+    @SuppressWarnings("JUnitMalformedDeclaration")
     @RegisterExtension
     private final AllTestsDriver driver = new DriverNodes(alice, bob).withNotary(notary, 1).forAllTests();
 
     @BeforeAll
     void setup() {
-        Set<MemberX500Name> nodes = new HashSet<>(Arrays.asList(alice, bob));
-        driver.run(
-                dsl -> dsl.startNodes(nodes)
-                        .stream().filter(it -> it.getCpiIdentifier().getName().equals("workflows"))
-                        .forEach(it -> vNodes.put(it.getHoldingIdentity().getX500Name(), it))
-        );
+        vNodes = driver.let(dsl -> {
+            dsl.startNodes(Set.of(alice, bob));
+            return dsl.nodesFor("workflows");
+        });
 
-        if (vNodes.isEmpty()) fail("Failed to populate vNodes");
+        assertThat(vNodes)
+            .withFailMessage("Failed to populate vNodes")
+            .isNotEmpty();
     }
 
     @Test
     void test_that_CreateAndIssueAppleStampFlow_returns_correct_message() {
         UUID stampId = createAndIssueAppleStamp("Stamp # 0001", bob, alice);
         logger.info("result: {}", stampId);
-        assertThat(stampId).isNotNull();
-        assertThat(stampId.toString()).hasSize(36); // standard UUID length
+        assertThat(stampId).isInstanceOf(UUID.class);
     }
 
     @Test
@@ -73,7 +75,7 @@ public class ApplesFlowDriverTests {
         packageApples("Basket of apples # 0002", 350, alice);
         RedeemApplesRequest redeemApplesFlowArgs = new RedeemApplesRequest(bob, stampId);
         driver.run(dsl ->
-                dsl.runFlow(vNodes.get(alice), RedeemApplesFlow.class, () -> jsonMapper.writeValueAsString(redeemApplesFlowArgs))
+            dsl.runFlow(vNodes.get(alice), RedeemApplesFlow.class, () -> jsonMapper.writeValueAsString(redeemApplesFlowArgs))
         );
         // flow has no return value to assert, if no exceptions are thrown test is successful
     }
@@ -81,14 +83,14 @@ public class ApplesFlowDriverTests {
     private void packageApples(String description, int weight, MemberX500Name packer) {
         PackageApplesRequest packageApplesFlowArgs = new PackageApplesRequest(description, weight);
         driver.run(dsl ->
-                dsl.runFlow(vNodes.get(packer), PackageApplesFlow.class, () -> jsonMapper.writeValueAsString(packageApplesFlowArgs))
+            dsl.runFlow(vNodes.get(packer), PackageApplesFlow.class, () -> jsonMapper.writeValueAsString(packageApplesFlowArgs))
         );
     }
 
     private UUID createAndIssueAppleStamp(String description, MemberX500Name member, MemberX500Name issuer) {
         CreateAndIssueAppleStampRequest createAndIssueFlowArgs = new CreateAndIssueAppleStampRequest(description, member);
         String result = driver.let(dsl ->
-                dsl.runFlow(vNodes.get(issuer), CreateAndIssueAppleStampFlow.class, () -> jsonMapper.writeValueAsString(createAndIssueFlowArgs))
+            dsl.runFlow(vNodes.get(issuer), CreateAndIssueAppleStampFlow.class, () -> jsonMapper.writeValueAsString(createAndIssueFlowArgs))
         );
         return UUID.fromString(result);
     }

@@ -11,14 +11,17 @@ import net.corda.v5.base.types.MemberX500Name;
 import net.corda.virtualnode.VirtualNodeInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
-public class MyFirstFlowDriverTests {
+@TestInstance(PER_CLASS)
+class MyFirstFlowDriverTests {
 
     /**
      * Step 1.
@@ -28,7 +31,6 @@ public class MyFirstFlowDriverTests {
 
     private static final MemberX500Name alice = MemberX500Name.parse("CN=Alice, OU=Application, O=R3, L=London, C=GB");
     private static final MemberX500Name bob = MemberX500Name.parse("CN=Bob, OU=Application, O=R3, L=London, C=GB");
-    private static final Map<MemberX500Name, VirtualNodeInfo> vNodes = new HashMap<>();
     private static final ObjectMapper jsonMapper;
 
     static {
@@ -39,6 +41,8 @@ public class MyFirstFlowDriverTests {
         jsonMapper.registerModule(module);
     }
 
+    private Map<MemberX500Name, VirtualNodeInfo> vNodes;
+
     /**
      * Step 2.
      * Declare a test driver
@@ -46,6 +50,7 @@ public class MyFirstFlowDriverTests {
      * Or an [AllTestsDriver] which will only be created once, and reused for all tests. Use this when tests can co-exist as the tests will run faster.
      */
 
+    @SuppressWarnings("JUnitMalformedDeclaration")
     @RegisterExtension
     private final EachTestDriver driver = new DriverNodes(alice, bob).forEachTest();
 
@@ -56,14 +61,12 @@ public class MyFirstFlowDriverTests {
 
     @BeforeEach
     void setup() {
-        Set<MemberX500Name> nodes = new HashSet<>(Arrays.asList(alice, bob));
-        driver.run(
-                dsl -> dsl.startNodes(nodes)
-                        .stream().filter(it -> it.getCpiIdentifier().getName().equals("workflows"))
-                        .forEach(it -> vNodes.put(it.getHoldingIdentity().getX500Name(), it))
-        );
+        vNodes = driver.let(dsl -> {
+            dsl.startNodes(Set.of(alice, bob));
+            return dsl.nodesFor("workflows");
+        });
 
-        if (vNodes.isEmpty()) fail("Failed to populate vNodes");
+        assertThat(vNodes).withFailMessage("Failed to populate vNodes").isNotEmpty();
     }
 
 
@@ -74,7 +77,7 @@ public class MyFirstFlowDriverTests {
      */
 
     @Test
-    public void test_that_MyFirstFLow_returns_correct_message() throws JsonProcessingException {
+    void test_that_MyFirstFLow_returns_correct_message() throws JsonProcessingException {
         String flowArgs = jsonMapper.writeValueAsString(new MyFirstFlowStartArgs(bob));
         String result = driver.let(dsl ->
                 dsl.runFlow(vNodes.get(alice), MyFirstFlow.class, () -> flowArgs)
