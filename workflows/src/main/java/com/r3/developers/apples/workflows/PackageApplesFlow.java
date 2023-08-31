@@ -72,7 +72,7 @@ public class PackageApplesFlow implements ClientStartableFlow {
         try {
             // Record the transaction, no sessions are passed in as the transaction is only being
             // recorded locally
-            return utxoLedgerService.finalize(transaction, Collections.emptyList()).toString();
+            return utxoLedgerService.finalize(transaction, Collections.emptyList()).getTransaction().getId().toString();
         } catch (Exception e) {
             return String.format("Flow failed, message: %s", e.getMessage());
         }
