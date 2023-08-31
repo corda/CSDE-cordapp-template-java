@@ -12,6 +12,7 @@ import net.corda.v5.ledger.common.NotaryLookup;
 import net.corda.v5.ledger.utxo.UtxoLedgerService;
 import net.corda.v5.ledger.utxo.transaction.UtxoSignedTransaction;
 import net.corda.v5.membership.NotaryInfo;
+import org.jetbrains.annotations.NotNull;
 import java.security.PublicKey;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -36,13 +37,17 @@ public class PackageApplesFlow implements ClientStartableFlow {
 
     @Suspendable
     @Override
-    public String call(ClientRequestBody requestBody) {
+    @NotNull
+    public String call(@NotNull ClientRequestBody requestBody) {
 
         PackageApplesRequest request = requestBody.getRequestBodyAs(jsonMarshallingService, PackageApplesRequest.class);
         String appleDescription = request.getAppleDescription();
         int weight = request.getWeight();
 
-        NotaryInfo notary = notaryLookup.getNotaryServices().iterator().next();
+        final NotaryInfo notary = notaryLookup.lookup(request.getNotary());
+        if (notary == null) {
+            throw new IllegalArgumentException("Notary " + request.getNotary() + " not found");
+        }
 
         PublicKey myKey = memberLookup.myInfo().getLedgerKeys().get(0);
 
@@ -67,7 +72,7 @@ public class PackageApplesFlow implements ClientStartableFlow {
         try {
             // Record the transaction, no sessions are passed in as the transaction is only being
             // recorded locally
-            return utxoLedgerService.finalize(transaction, Collections.emptyList()).toString();
+            return utxoLedgerService.finalize(transaction, Collections.emptyList()).getTransaction().getId().toString();
         } catch (Exception e) {
             return String.format("Flow failed, message: %s", e.getMessage());
         }
