@@ -122,7 +122,7 @@ public class RedeemApplesFlow implements ClientStartableFlow {
         try {
             // Send the transaction and state to the counterparty and let them sign it
             // Then notarise and record the transaction in both parties' vaults.
-            return utxoLedgerService.finalize(transaction, List.of(session)).toString();
+            return utxoLedgerService.finalize(transaction, List.of(session)).getTransaction().getId().toString();
         } catch (Exception e) {
             return String.format("Flow failed, message: %s", e.getMessage());
         }
