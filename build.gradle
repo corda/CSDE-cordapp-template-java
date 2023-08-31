@@ -15,7 +15,6 @@ allprojects {
     version '1.0-SNAPSHOT'
 
     // Configure the CSDE
-    apply plugin: 'net.corda.plugins.csde'
     csde {
         cordaClusterURL = "https://localhost:8888"
         networkConfigFile = "config/static-network-config.json"
