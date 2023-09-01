@@ -1,0 +1,78 @@
+import static org.gradle.api.JavaVersion.VERSION_17
+import static org.gradle.jvm.toolchain.JavaLanguageVersion.of
+
+
+pluginManager.withPlugin('java') {
+    configurations {
+        systemCpb {
+            canbeConsumend = false
+            visible = false
+        }
+        testCpk {
+            canbeConsumend = false
+            visible = false
+        }
+        testCpb {
+            attributes {
+                attribute(LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements, 'cpb'))
+            }
+            canbeConsumend = false
+            extendsFrom = testCpk
+            visible = false
+        }
+    }
+
+    allprojects {
+        repositories {
+            // All dependencies are held in Maven Central
+            mavenLocal()
+            mavenCentral()
+
+            maven {
+                // Quasar & Antlr
+                url = "$artifactoryContextUrl/corda-dependencies-dev"
+                authentication {
+                    basic(BasicAuthentication)
+                }
+                credentials {
+                    username = findProperty('cordaArtifactoryUsername') ?: System.getenv('CORDA_ARTIFACTORY_USERNAME')
+                    password = findProperty('cordaArtifactoryPassword') ?: System.getenv('CORDA_ARTIFACTORY_PASSWORD')
+                }
+                mavenContent {
+                    snapshotsOnly()
+                }
+            }
+        }
+    }
+
+
+    dependencies {
+        testImplementation "net.corda:corda-driver:$cordaDriverVersion"
+        testRuntimeOnly "net.corda:corda-driver-engine:$cordaDriverVersion"
+        testRuntimeOnly files(configurations.archives.artifacts.files)
+        testRuntimeOnly "com.r3.corda.notary.plugin.nonvalidating:notary-plugin-non-validating-server:$cordaNotaryPluginsVersion:package@cpb"
+
+    }
+
+
+    tasks.withType(Test).configureEach {
+        doFirst {
+            jvmArgs '--add-opens', 'java.base/java.lang=ALL-UNNAMED',
+                    '--add-opens', 'java.base/java.lang.invoke=ALL-UNNAMED',
+                    '--add-opens', 'java.base/java.nio=ALL-UNNAMED',
+                    '--add-opens', 'java.base/java.time=ALL-UNNAMED',
+                    '--add-opens', 'java.base/java.util=ALL-UNNAMED'
+
+            systemProperty 'co.paralleluniverse.fibers.verifyInstrumentation', true
+            systemProperty 'java.io.tmpdir', buildDir.absolutePath
+
+            systemProperty 'org.slf4j.simpleLogger.defaultLogLevel', 'info'
+            systemProperty 'org.slf4j.simpleLogger.dateTimeFormat', 'yyyy-MM-dd HH:mm:ss:SSS Z'
+            systemProperty 'org.slf4j.simpleLogger.showDateTime', true
+            systemProperty 'org.slf4j.simpleLogger.showShortLogName', true
+            systemProperty 'org.slf4j.simpleLogger.showThreadName', false
+            systemProperty 'org.slf4j.simpleLogger.logFile', 'System.out'
+            systemProperty 'org.slf4j.simpleLogger.log.org.apache.aries.spifly.BaseActivator', 'OFF'
+        }
+    }
+}

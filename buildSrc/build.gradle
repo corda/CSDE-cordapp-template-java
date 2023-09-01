@@ -1,0 +1,78 @@
+plugins {
+    id 'groovy-gradle-plugin'
+}
+
+// We can't get the values directly from `gradle.properties` from here for some gradle-y reason.
+// So we'll load it into our own object to grab what we need.
+def constants = new Properties()
+file("$rootDir/../gradle.properties").withInputStream { InputStream input -> constants.load(input) }
+def bndVersion = constants.getProperty('bndVersion')
+def bndlibVersion = constants.getProperty('bndlibVersion')
+def artifactoryContextUrl = constants.getProperty('artifactoryContextUrl')
+def jibCoreVersion = constants.getProperty('jibCoreVersion')
+def internalPublishVersion = constants.getProperty('internalPublishVersion')
+def gradleEnterpriseVersion = constants.getProperty('gradleEnterpriseVersion')
+def log4jVersion = constants.getProperty('log4jVersion')
+
+dependencies {
+    constraints {
+        implementation('biz.aQute.bnd:biz.aQute.bnd.embedded-repo') {
+            version {
+                require bndlibVersion
+            }
+        }
+        implementation('biz.aQute.bnd:biz.aQute.resolve') {
+            version {
+                require bndlibVersion
+            }
+        }
+    }
+    implementation "biz.aQute.bnd:biz.aQute.bnd.gradle:$bndVersion"
+    implementation "biz.aQute.bnd:biz.aQute.bndlib:$bndlibVersion"
+
+    implementation "com.google.cloud.tools:jib-core:$jibCoreVersion"
+    implementation "com.gradle:gradle-enterprise-gradle-plugin:$gradleEnterpriseVersion"
+
+    implementation "org.apache.logging.log4j:log4j-core:$log4jVersion"
+
+    if (System.getenv('CORDA_ARTIFACTORY_USERNAME') != null || project.hasProperty('cordaArtifactoryUsername')) {
+        implementation "com.r3.internal.gradle.plugins:publish:$internalPublishVersion"
+    }
+}
+
+repositories {
+    def cordaUseCache = System.getenv("CORDA_USE_CACHE")
+    if (cordaUseCache != null) {
+        maven {
+            url = "${artifactoryContextUrl}/${cordaUseCache}"
+            name = "R3 Maven remote repositories"
+            authentication {
+                basic(BasicAuthentication)
+            }
+            credentials {
+                username = findProperty('cordaArtifactoryUsername') ?: System.getenv('CORDA_ARTIFACTORY_USERNAME')
+                password = findProperty('cordaArtifactoryPassword') ?: System.getenv('CORDA_ARTIFACTORY_PASSWORD')
+            }
+            metadataSources {
+                mavenPom()
+                artifact()
+                ignoreGradleMetadataRedirection()
+            }
+        }
+    } else {
+        maven {
+            url "${artifactoryContextUrl}/engineering-tools-maven"
+            authentication {
+                basic(BasicAuthentication)
+            }
+            credentials {
+                username = findProperty('cordaArtifactoryUsername') ?: System.getenv('CORDA_ARTIFACTORY_USERNAME')
+                password = findProperty('cordaArtifactoryPassword') ?: System.getenv('CORDA_ARTIFACTORY_PASSWORD')
+            }
+            content {
+                includeGroupByRegex 'com\\.r3\\.internal(\\..*)?'
+            }
+        }
+        gradlePluginPortal()
+    }
+}
