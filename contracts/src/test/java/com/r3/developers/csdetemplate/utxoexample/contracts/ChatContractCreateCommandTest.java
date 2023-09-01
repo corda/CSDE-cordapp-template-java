@@ -18,8 +18,15 @@ import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * This class is an implementation of ContractTest. This provides functions to easily perform unit tests on contracts.
+ * This allows us to unit test our implementation of contracts without having to trigger a workflow.
+ **/
+
+// This specific class is involved with testing the scenarios involving the ChatState state and the Create command.
 public class ChatContractCreateCommandTest extends ContractTest {
 
+    // The following are default values for states so that tests can easily refer and re-use them
     protected ChatState outputChatState = new ChatState(
             UUID.randomUUID(),
             "aliceChatName",
@@ -28,19 +35,38 @@ public class ChatContractCreateCommandTest extends ContractTest {
             List.of(aliceKey, bobKey)
     );
 
+    /**
+     * All Tests must start with the @Test annotation. Tests can be run individually by running them with your IDE.
+     * Alternatively, tests can be grouped up and tested by running the test from the line defining the class above.
+     * If you need help to write tests, think of a happy path scenario and then think of every line of code in the contract
+     * where the transaction could fail.
+     * It helps to meaningfully name tests so that you know exactly what success case or specific error you are testing for.
+     **/
+
     @Test
     public void happyPath() {
+        // The following test builds a transaction that should pass all the contract verification checks.
+        // The buildTransaction function helps create a utxoLedgerTransaction that can be referenced for contract tests
         UtxoSignedTransaction transaction = getLedgerService()
                 .createTransactionBuilder()
                 .addOutputState(outputChatState)
                 .addCommand(new ChatContract.Create())
                 .addSignatories(outputChatState.participants)
                 .toSignedTransaction();
+        /**
+         *  The assertVerifies function is the general way to test if a contract test passes or fails a transaction.
+         *  If the transaction is verified, then it means that the contract tests pass.
+         **/
         assertVerifies(transaction);
     }
 
     @Test
     public void addAttachmentsNotSupported() {
+        // The following transaction will fail due to the fact that we currently do not support the feature for attachments
+        // onto transactions for the mock ledger.
+
+        // Where a specific piece of test data is used only once, it makes sense to create it within the test
+        // rather than at a class/parent class level.
         SecureHash secureHash = new SecureHash() {
             @NotNull
             @Override
@@ -73,6 +99,7 @@ public class ChatContractCreateCommandTest extends ContractTest {
 
     @Test
     public void missingCommand() {
+        // The following test builds a transaction that would fail due to not having a command.
         UtxoSignedTransaction transaction = getLedgerService()
                 .createTransactionBuilder()
                 .addOutputState(outputChatState)
@@ -82,6 +109,7 @@ public class ChatContractCreateCommandTest extends ContractTest {
 
     @Test
     public void shouldNotAcceptUnknownCommand() {
+        // The following test builds a transaction that would fail due to providing an invalid command.
         class MyDummyCommand implements Command {
         }
 
@@ -97,6 +125,8 @@ public class ChatContractCreateCommandTest extends ContractTest {
 
     @Test
     public void outputStateCannotHaveZeroParticipants() {
+        // The following test builds a transaction that would fail due to not providing participants, when the contract
+        // expects exactly two participants.
         ChatState state = new ChatState(
                 UUID.randomUUID(),
                 "myChatName",
@@ -114,6 +144,8 @@ public class ChatContractCreateCommandTest extends ContractTest {
 
     @Test
     public void outputStateCannotHaveOneParticipant() {
+        // The following test builds a transaction that would fail due to not providing the right number of participants.
+        // This test provides a list of only one participant, when the contract expects exactly two participants.
         ChatState state = new ChatState(
                 UUID.randomUUID(),
                 "myChatName",
@@ -131,6 +163,8 @@ public class ChatContractCreateCommandTest extends ContractTest {
 
     @Test
     public void outputStateCannotHaveThreeParticipants() {
+        // The following test builds a transaction that would fail due to not providing the right number of participants.
+        // This test provides a list of three participants, when the contract expects exactly two participants.
         ChatState state = new ChatState(
                 UUID.randomUUID(),
                 "myChatName",
@@ -148,6 +182,7 @@ public class ChatContractCreateCommandTest extends ContractTest {
 
     @Test
     public void outputStateMustBeSigned() {
+        // The following test builds a transaction that would fail due to not signing the transaction.
         UtxoSignedTransaction transaction = getLedgerService()
                 .createTransactionBuilder()
                 .addOutputState(outputChatState)
@@ -158,6 +193,8 @@ public class ChatContractCreateCommandTest extends ContractTest {
 
     @Test
     public void outputStateCannotBeSignedByOnlyOneParticipant() {
+        // The following test builds a transaction that would fail due to being signed by only one participant and not
+        // all participants.
         UtxoSignedTransaction transaction = getLedgerService()
                 .createTransactionBuilder()
                 .addOutputState(outputChatState)
@@ -169,6 +206,8 @@ public class ChatContractCreateCommandTest extends ContractTest {
 
     @Test
     public void shouldNotIncludeInputState() {
+        // The following test builds a transaction that would fail due to providing an input state when the contract did
+        // not expect one
         happyPath(); // generate an existing state to search for
         StateAndRef<ChatState> existingState = getLedgerService().findUnconsumedStatesByType(ChatState.class).get(0); // doesn't matter which as this will fail validation
         UtxoSignedTransaction transaction = getLedgerService()
@@ -183,6 +222,8 @@ public class ChatContractCreateCommandTest extends ContractTest {
 
     @Test
     public void shouldNotHaveTwoOutputStates() {
+        // The following test builds a transaction that would fail due to providing two output states when the contract
+        // only
         UtxoSignedTransaction transaction = getLedgerService()
                 .createTransactionBuilder()
                 .addOutputState(outputChatState)
