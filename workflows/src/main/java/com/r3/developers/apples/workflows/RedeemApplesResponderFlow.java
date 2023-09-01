@@ -6,6 +6,7 @@ import net.corda.v5.application.flows.ResponderFlow;
 import net.corda.v5.application.messaging.FlowSession;
 import net.corda.v5.base.annotations.Suspendable;
 import net.corda.v5.ledger.utxo.UtxoLedgerService;
+import org.jetbrains.annotations.NotNull;
 
 @InitiatedBy(protocol = "redeem-apples")
 public class RedeemApplesResponderFlow implements ResponderFlow {
@@ -15,7 +16,7 @@ public class RedeemApplesResponderFlow implements ResponderFlow {
 
     @Suspendable
     @Override
-    public void call(FlowSession session) {
+    public void call(@NotNull FlowSession session) {
         // Receive, verify, validate, sign and record the transaction sent from the initiator
         utxoLedgerService.receiveFinality(session, _transaction -> {
             /*

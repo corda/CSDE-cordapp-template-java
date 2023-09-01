@@ -60,38 +60,45 @@ class ApplesFlowDriverTests {
     void test_that_CreateAndIssueAppleStampFlow_returns_correct_message() {
         UUID stampId = createAndIssueAppleStamp("Stamp # 0001", bob, alice);
         logger.info("result: {}", stampId);
-        assertThat(stampId).isInstanceOf(UUID.class);
     }
 
     @Test
     void test_that_PackageApplesFlow_is_successful() {
-        packageApples("Basket of apples # 0001", 100, alice);
-        // flow has no return value to assert, if no exceptions are thrown test is successful
+        String txId = packageApples("Basket of apples # 0001", 100, alice);
+        logger.info("PackageApples: {}", txId);
     }
 
     @Test
     void test_that_RedeemApplesFlow_is_successful() {
         UUID stampId = createAndIssueAppleStamp("Stamp # 0002", bob, alice);
         packageApples("Basket of apples # 0002", 350, alice);
-        RedeemApplesRequest redeemApplesFlowArgs = new RedeemApplesRequest(bob, stampId);
-        driver.run(dsl ->
+        RedeemApplesRequest redeemApplesFlowArgs = new RedeemApplesRequest(bob, notary, stampId);
+        String result = driver.let(dsl ->
             dsl.runFlow(vNodes.get(alice), RedeemApplesFlow.class, () -> jsonMapper.writeValueAsString(redeemApplesFlowArgs))
         );
-        // flow has no return value to assert, if no exceptions are thrown test is successful
+        logger.info("RedeemApplesRequest returns {}", result);
+        assertThat(result)
+            .withFailMessage(() -> "Not SHA-256 hash: '" + result + '\'')
+            .isNotNull().startsWith("SHA-256D:");
     }
 
-    private void packageApples(String description, int weight, MemberX500Name packer) {
-        PackageApplesRequest packageApplesFlowArgs = new PackageApplesRequest(description, weight);
-        driver.run(dsl ->
+    private String packageApples(String description, int weight, MemberX500Name packer) {
+        PackageApplesRequest packageApplesFlowArgs = new PackageApplesRequest(description, weight, notary);
+        String result = driver.let(dsl ->
             dsl.runFlow(vNodes.get(packer), PackageApplesFlow.class, () -> jsonMapper.writeValueAsString(packageApplesFlowArgs))
         );
+        assertThat(result)
+            .withFailMessage(() -> "Not SHA-256 hash: '" + result + '\'')
+            .isNotNull().startsWith("SHA-256D:");
+        return result;
     }
 
     private UUID createAndIssueAppleStamp(String description, MemberX500Name member, MemberX500Name issuer) {
-        CreateAndIssueAppleStampRequest createAndIssueFlowArgs = new CreateAndIssueAppleStampRequest(description, member);
+        CreateAndIssueAppleStampRequest createAndIssueFlowArgs = new CreateAndIssueAppleStampRequest(description, member, notary);
         String result = driver.let(dsl ->
             dsl.runFlow(vNodes.get(issuer), CreateAndIssueAppleStampFlow.class, () -> jsonMapper.writeValueAsString(createAndIssueFlowArgs))
         );
+        assertThat(result).withFailMessage("CreateAndIssueAppleStampFlow returned null").isNotNull();
         return UUID.fromString(result);
     }
 }

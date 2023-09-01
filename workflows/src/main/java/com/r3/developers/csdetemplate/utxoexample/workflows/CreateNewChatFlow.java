@@ -14,14 +14,13 @@ import net.corda.v5.ledger.utxo.transaction.UtxoSignedTransaction;
 import net.corda.v5.ledger.utxo.transaction.UtxoTransactionBuilder;
 import net.corda.v5.membership.MemberInfo;
 import net.corda.v5.membership.NotaryInfo;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.security.PublicKey;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.UUID;
 
 import static java.util.Objects.*;
@@ -51,7 +50,8 @@ public class CreateNewChatFlow implements ClientStartableFlow {
 
     @Suspendable
     @Override
-    public String call( ClientRequestBody requestBody) {
+    @NotNull
+    public String call(@NotNull ClientRequestBody requestBody) {
 
         log.info("CreateNewChatFlow.call() called");
 
