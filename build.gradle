@@ -8,7 +8,6 @@ plugins {
     id 'java'
     id 'maven-publish'
     id 'net.corda.plugins.csde'
-    id 'workflows.testing'
 }
 
 allprojects {
