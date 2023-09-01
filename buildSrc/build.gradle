@@ -1,0 +1,84 @@
+plugins {
+    id 'groovy-gradle-plugin'
+}
+
+// access gradle.properties from root project
+// buildSrc directory can not access these via standard Gradle means so load the properties file
+def constantsGradleProperties = new Properties()
+file("$rootDir/../gradle.properties").withInputStream { InputStream input -> constantsGradleProperties.load(input) }
+def artifactoryContextUrl = constantsGradleProperties.getProperty('artifactoryContextUrl')
+def projectVerison = constantsGradleProperties.getProperty('version')
+def localcordaApiVersion = constantsGradleProperties.getProperty('cordaApiVersion')
+def cordaApiVersion
+
+// dynamicly load a stable version of cordaApiVersion from the head of a given release branch of corda-runtime-os if cordaApiVersion is not set
+if (!localcordaApiVersion.isEmpty()) {
+    logger.quiet("cordaApiVersion in set to $localcordaApiVersion using this rather than loading from release branch")
+    cordaApiVersion = constantsGradleProperties.getProperty('cordaApiVersion')
+} else {
+    logger.quiet("cordaApiVersion is set to empty string, loading latest version from release branch")
+    cordaApiVersion = dynamicallyRetrieveCordaApiVersion(projectVerison)
+}
+
+// dependency for cordapp-configuration plugin, we load this via BuildSrc rather than a traditional "plugins" block
+// to allow us to load the version dynamically
+dependencies {
+    implementation "net.corda.cordapp:cordapp-configuration:${cordaApiVersion}"
+}
+
+repositories {
+    mavenLocal()
+    def cordaUseCache = System.getenv("CORDA_USE_CACHE")
+    if (cordaUseCache != null) {
+        maven {
+            url = "${artifactoryContextUrl}/${cordaUseCache}"
+            name = "R3 Maven remote repositories"
+            authentication {
+                basic(BasicAuthentication)
+            }
+            credentials {
+                username = findProperty('cordaArtifactoryUsername') ?: System.getenv('CORDA_ARTIFACTORY_USERNAME')
+                password = findProperty('cordaArtifactoryPassword') ?: System.getenv('CORDA_ARTIFACTORY_PASSWORD')
+            }
+        }
+    } else {
+        mavenLocal()
+        // needed for cordapp-configuration plugin
+        maven {
+            url "${artifactoryContextUrl}/corda-os-maven"
+            content {
+                includeGroupByRegex 'net\\.corda\\.cordapp(\\..*)?'
+            }
+            authentication {
+                basic(BasicAuthentication)
+            }
+            credentials {
+                username = findProperty('cordaArtifactoryUsername') ?: System.getenv('CORDA_ARTIFACTORY_USERNAME')
+                password = findProperty('cordaArtifactoryPassword') ?: System.getenv('CORDA_ARTIFACTORY_PASSWORD')
+            }
+        }
+        gradlePluginPortal()
+    }
+}
+
+/**
+ * Dynamically retrieve the cordaApiVersion from the head of a given release branch of corda-runtime-os
+ * @param projectVerison the current version of this project (e.g. 5.0.0-Fox)
+ * @return the cordaApiVersion the version of corda-api the release branch of corda-runtime-os is using
+ */
+def dynamicallyRetrieveCordaApiVersion(def projectVerison) {
+    def fileURL
+
+    logger.quiet("Current branch is or originated from release/os/5.1 branch, retrieving cordaApiVersion from release/os/5.1")
+    fileURL = "https://raw.githubusercontent.com/corda/corda-runtime-os/release/os/5.1/gradle.properties"
+
+    if (file("$rootDir/dynamicRuntimeProperties/corda-os-runtime.properties").exists()) {
+        file("$rootDir/dynamicRuntimeProperties/corda-os-runtime.properties").delete()
+    }
+
+    // write corda-runtime-os gradle.properties file to build directory and load cordaApiVersion from it
+    new File("$rootDir/dynamicRuntimeProperties/corda-os-runtime.properties")  << new URL(fileURL).getText()
+    def constantsRuntime = new Properties()
+    file("$rootDir/dynamicRuntimeProperties/corda-os-runtime.properties").withInputStream { InputStream input -> constantsRuntime.load(input) }
+    return constantsRuntime.getProperty('cordaApiVersion')
+}
