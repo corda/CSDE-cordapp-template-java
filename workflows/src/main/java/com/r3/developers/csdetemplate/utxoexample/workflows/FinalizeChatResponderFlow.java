@@ -47,7 +47,7 @@ public class FinalizeChatResponderFlow implements ResponderFlow {
                 log.info("Verified the transaction - " + ledgerTransaction.getId());
             };
 
-            // Calls receiveFinality() function which provides the responder to the finalise() function
+            // Calls receiveFinality() function which provides the responder to the finalize() function
             // in the Initiating Flow. Accepts a lambda validator containing the business logic to decide whether
             // responder should sign the Transaction.
             UtxoSignedTransaction finalizedSignedTransaction = utxoLedgerService.receiveFinality(session, txValidator).getTransaction();

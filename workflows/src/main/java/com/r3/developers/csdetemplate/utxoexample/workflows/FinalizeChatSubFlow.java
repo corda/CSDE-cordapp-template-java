@@ -44,7 +44,7 @@ public class FinalizeChatSubFlow implements SubFlow<String> {
         // Initiates a session with the other Member.
         FlowSession session = flowMessaging.initiateFlow(otherMember);
 
-        // Calls the Corda provided finalise() function which gather signatures from the counterparty,
+        // Calls the Corda provided finalize() function which gather signatures from the counterparty,
         // notarises the transaction and persists the transaction to each party's vault.
         // On success returns the id of the transaction created. (This is different to the ChatState id)
         String result;
