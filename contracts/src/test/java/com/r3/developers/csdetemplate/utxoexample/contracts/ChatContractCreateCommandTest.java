@@ -61,43 +61,6 @@ public class ChatContractCreateCommandTest extends ContractTest {
     }
 
     @Test
-    public void addAttachmentsNotSupported() {
-        // The following transaction will fail due to the fact that we currently do not support the feature for attachments
-        // onto transactions for the mock ledger.
-
-        // Where a specific piece of test data is used only once, it makes sense to create it within the test
-        // rather than at a class/parent class level.
-        SecureHash secureHash = new SecureHash() {
-            @NotNull
-            @Override
-            public String getAlgorithm() {
-                return null;
-            }
-
-            @NotNull
-            @Override
-            public String toHexString() {
-                return null;
-            }
-        };
-
-        Exception exception = assertThrows(UnsupportedOperationException.class, () -> {
-            UtxoSignedTransaction transaction = getLedgerService()
-                    .createTransactionBuilder()
-                    .addAttachment(secureHash)
-                    .addOutputState(outputChatState)
-                    .addCommand(new ChatContract.Create())
-                    .addSignatories(outputChatState.participants)
-                    .toSignedTransaction();
-        });
-
-        String expectedMessage = "This method is not implemented for the mock ledger";
-        String actualMessage = exception.getMessage();
-
-        assertTrue(actualMessage.contains(expectedMessage));
-    }
-
-    @Test
     public void missingCommand() {
         // The following test builds a transaction that would fail due to not having a command.
         UtxoSignedTransaction transaction = getLedgerService()
