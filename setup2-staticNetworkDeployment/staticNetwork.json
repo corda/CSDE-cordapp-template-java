@@ -1,0 +1,35 @@
+{
+  "members":[
+    {
+      "name":"CN=Alice, OU=Test Dept, O=R3, L=London, C=GB",
+      "endpoint":"http://localhost:1080",
+      "endpointProtocol":1,
+      "cpi" : "MyCorDapp"
+    },
+    {
+      "name":"CN=Bob, OU=Test Dept, O=R3, L=London, C=GB",
+      "endpoint":"http://localhost:1080",
+      "endpointProtocol":1,
+      "cpi" : "MyCorDapp"
+    },
+    {
+      "name":"CN=Charlie, OU=Test Dept, O=R3, L=London, C=GB",
+      "endpoint":"http://localhost:1080",
+      "endpointProtocol":1,
+      "cpi" : "MyCorDapp"
+    },
+    {
+      "name":"CN=Dave, OU=Test Dept, O=R3, L=London, C=GB",
+      "endpoint":"http://localhost:1080",
+      "endpointProtocol":1,
+      "cpi" : "MyCorDapp"
+    },
+    {
+      "name":"CN=NotaryRep1, OU=Test Dept, O=R3, L=London, C=GB",
+      "endpoint":"http://localhost:1080",
+      "endpointProtocol":1,
+      "cpi" : "NotaryServer",
+      "serviceX500Name": "CN=NotaryService, OU=Test Dept, O=R3, L=London, C=GB"
+    }
+  ]
+}

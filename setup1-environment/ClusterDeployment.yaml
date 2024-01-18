@@ -1,0 +1,56 @@
+version: '2.19.1'
+
+services:
+  CSDEpostgresql:
+    image: postgres
+    restart: unless-stopped
+    tty: true
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=cordacluster
+    ports:
+      - 5432:5432
+
+
+  combined-worker:
+    image: corda/corda-os-combined-worker:5.1.0.0
+    entrypoint: [
+      "/bin/sh",
+      "-c",
+      "exec java -Dlog4j2.debug=false 
+      -Dlog4j.configurationFile=log4j2-console.xml 
+      -Dco.paralleluniverse.fibers.verifyInstrumentation=true 
+      -jar /opt/override/combined-worker.jar $$@",
+      "$$@"
+    ]
+    command: [ "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005",
+               "-mbus.busType=DATABASE",
+               "-spassphrase=password",
+               "-ssalt=salt",
+               "-ddatabase.user=user",
+               "-ddatabase.pass=password",
+               "-ddatabase.jdbc.url=jdbc:postgresql://CSDEpostgresql:5432/cordacluster",
+               "-ddatabase.jdbc.directory=/opt/override/drivers",
+               "--serviceEndpoint=endpoints.crypto=localhost:7004",
+               "--serviceEndpoint=endpoints.verification=localhost:7004",
+               "--serviceEndpoint=endpoints.uniqueness=localhost:7004",
+               "--serviceEndpoint=endpoints.persistence=localhost:7004",
+               "--serviceEndpoint=endpoints.tokenSelection=localhost:7004"
+    ]
+    volumes:
+      - $HOME/.corda/corda5/jdbcDrivers:/opt/override/drivers
+    ports:
+      - 8888:8888
+      - 7000:7000
+      - 5005:5005
+
+  FlowManagementTool:
+    image: flow-management-ui
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - 5000:5000
+    command: ["sh", "-c", "pip install -r requirements.txt && python3 app.py"]
+
