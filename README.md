@@ -1,6 +1,32 @@
 # CSDE-cordapp-template-java
 
+## Local deployment with scrips 
+In this repository, we provided the scripts to deploy a Corda combined worker locally and to further deploy a static network carrying the template chat app. 
 
+Step 1: To deploy the Corda combined worker: 
+```
+cd setup1-environment/
+sh CordaDeployment.sh
+```
+This shell script will start three services: 1) Corda combinedworker, 2) Postgres Database, 3) An user-friendly flow managment Tool. 
+* Corda combinedworker: https://localhost:8888/api/v1/swagger#/ 
+* Flow management tool at: http://localhost:5000/
+
+Step 2: To deploy a stactic network, carrying the template chat app. 
+```
+cd setup2-staticNetworkDeployment
+sh Step5-VNodesSetup.sh
+```
+This shell script will excute a series of scripts behind the scene. More details to be find at the README in the folder. When it is done, we should be able to get on to: http://localhost:5000/ to start operate the chat cordapp. 
+
+Step 3: Clean up
+```
+cd setup2-staticNetworkDeployment
+sh cleanup.sh 
+```
+This clean up script will shut down all the docker containers and delete all the generated files. 
+
+## Introduction
 To help make the process of prototyping CorDapps on Corda 5 more straight forward we have developed the Cordapp Standard Development Environment (CSDE).
 
 The CSDE is obtained by cloning this CSDE-Cordapp-Template-Java repository to your local machine. The CSDE provides:
