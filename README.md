@@ -18,6 +18,10 @@ cd setup2-staticNetworkDeployment
 sh Step5-VNodesSetup.sh
 ```
 This shell script will excute a series of scripts behind the scene. More details to be find at the README in the folder. When it is done, we should be able to get on to: http://localhost:5000/ to start operate the chat cordapp. 
+Note that, you would need `jq` tool installed. You can install it by: 
+```
+brew install jq
+```
 
 Step 3: Clean up
 ```
