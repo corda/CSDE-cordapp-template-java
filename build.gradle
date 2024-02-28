@@ -7,34 +7,36 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.jpa'
     id 'java'
     id 'maven-publish'
-    id 'net.corda.plugins.csde'
+    id 'net.corda.gradle.plugin'
 }
 
 allprojects {
-    group 'com.r3.developers.csdetemplate'
+    group 'com.r3.developers.cordapptemplate'
     version '1.0-SNAPSHOT'
 
-    // Configure the CSDE
-    csde {
+    // Configure Corda runtime gradle plugin
+    cordaRuntimeGradlePlugin {
+        notaryVersion = cordaNotaryPluginsVersion
+        notaryCpiName = "NotaryServer"
+        corDappCpiName = "MyCorDapp"
+        cpiUploadTimeout = "30000"
+        vnodeRegistrationTimeout = "60000"
+        cordaProcessorTimeout = "300000"
+        workflowsModuleName = "workflows"
         cordaClusterURL = "https://localhost:8888"
+        cordaRestUser = "admin"
+        cordaRestPasswd ="admin"
+        composeFilePath = "config/combined-worker-compose.yaml"
         networkConfigFile = "config/static-network-config.json"
         r3RootCertFile = "config/r3-ca-key.pem"
-        corDappCpiName = "MyCorDapp"
-        notaryCpiName = "NotaryServer"
-        cordaRpcUser = "admin"
-        cordaRpcPasswd ="admin"
-        workflowsModuleName = workflowsModule
-        csdeWorkspaceDir = "workspace"
-        notaryVersion = cordaNotaryPluginsVersion
-        combinedWorkerVersion = combinedWorkerJarVersion
-        postgresJdbcVersion = "42.4.3"
-        cordaDbContainerName = "CSDEpostgresql"
-        cordaBinDir = "${System.getProperty("user.home")}/$cordaBinariesDirectory"
-        cordaCliBinDir = "${System.getProperty("user.home")}/$cordaCliBinariesDirectory"
-        cpiUploadTimeout = cpiUploadDefault
-        cordaProcessorTimeout = processorTimeout
-        vnodeRegistrationTimeout = vnodeRegistrationTimeoutDefault
-        skipTestsDuringBuildCpis = this.skipTestsDuringBuildCpis
+        skipTestsDuringBuildCpis = "false"
+        cordaRuntimePluginWorkspaceDir = "workspace"
+        cordaBinDir = "${System.getProperty("user.home")}/.corda/corda5"
+        cordaCliBinDir = "${System.getProperty("user.home")}/.corda/cli"
+
+        // Only need to supply these if you want to use an unpublished version
+        artifactoryUsername = findProperty('cordaArtifactoryUsername') ?: System.getenv('CORDA_ARTIFACTORY_USERNAME')
+        artifactoryPassword = findProperty('cordaArtifactoryPassword') ?: System.getenv('CORDA_ARTIFACTORY_PASSWORD')
     }
 
     java {
@@ -72,20 +74,6 @@ allprojects {
                 password = findProperty('cordaArtifactoryPassword') ?: System.getenv('CORDA_ARTIFACTORY_PASSWORD')
             }
         }
-        maven {
-            // Quasar & Antlr
-            url = "$artifactoryContextUrl/corda-dependencies-dev"
-            authentication {
-                basic(BasicAuthentication)
-            }
-            credentials {
-                username = findProperty('cordaArtifactoryUsername') ?: System.getenv('CORDA_ARTIFACTORY_USERNAME')
-                password = findProperty('cordaArtifactoryPassword') ?: System.getenv('CORDA_ARTIFACTORY_PASSWORD')
-            }
-            mavenContent {
-                snapshotsOnly()
-            }
-        }
     }
 
     tasks.withType(Test).configureEach {
@@ -97,7 +85,7 @@ allprojects {
 publishing {
     publications {
         maven(MavenPublication) {
-            artifactId "corda-CSDE-java-sample"
+            artifactId "corda-dev-template-java-sample"
             groupId project.group
             artifact jar
         }

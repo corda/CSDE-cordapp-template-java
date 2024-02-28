@@ -1,4 +1,4 @@
-package com.r3.developers.csdetemplate.utxoexample.workflows;
+package com.r3.developers.cordapptemplate.utxoexample.workflows;
 
 import java.util.UUID;
 

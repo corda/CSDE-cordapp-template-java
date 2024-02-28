@@ -1,4 +1,4 @@
-package com.r3.developers.csdetemplate.utxoexample.workflows;
+package com.r3.developers.cordapptemplate.utxoexample.workflows;
 
 // A class to pair the messageFrom and message together.
 public class MessageAndSender {

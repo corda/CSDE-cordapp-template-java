@@ -1,4 +1,4 @@
-package com.r3.developers.csdetemplate.utxoexample.workflows;
+package com.r3.developers.cordapptemplate.utxoexample.workflows;
 
 // A class to hold the deserialized arguments required to start the flow.
 public class CreateNewChatFlowArgs{

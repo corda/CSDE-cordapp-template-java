@@ -1,7 +1,7 @@
-package com.r3.developers.csdetemplate.utxoexample.workflows;
+package com.r3.developers.cordapptemplate.utxoexample.workflows;
 
-import com.r3.developers.csdetemplate.utxoexample.contracts.ChatContract;
-import com.r3.developers.csdetemplate.utxoexample.states.ChatState;
+import com.r3.developers.cordapptemplate.utxoexample.contracts.ChatContract;
+import com.r3.developers.cordapptemplate.utxoexample.states.ChatState;
 import net.corda.v5.application.flows.ClientRequestBody;
 import net.corda.v5.application.flows.ClientStartableFlow;
 import net.corda.v5.application.flows.CordaInject;
@@ -111,7 +111,7 @@ public class UpdateChatFlow implements ClientStartableFlow {
 RequestBody for triggering the flow via REST:
 {
     "clientRequestId": "update-1",
-    "flowClassName": "com.r3.developers.csdetemplate.utxoexample.workflows.UpdateChatFlow",
+    "flowClassName": "com.r3.developers.cordapptemplate.utxoexample.workflows.UpdateChatFlow",
     "requestBody": {
         "id":" ** fill in id **",
         "message": "How are you today?"

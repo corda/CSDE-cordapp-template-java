@@ -1,7 +1,7 @@
-package com.r3.developers.csdetemplate.utxoexample.contracts;
+package com.r3.developers.cordapptemplate.utxoexample.contracts;
 
 import com.r3.corda.ledger.utxo.testing.ContractTest;
-import com.r3.developers.csdetemplate.utxoexample.states.ChatState;
+import com.r3.developers.cordapptemplate.utxoexample.states.ChatState;
 import net.corda.v5.ledger.utxo.StateAndRef;
 import net.corda.v5.ledger.utxo.transaction.UtxoSignedTransaction;
 import org.junit.jupiter.api.Test;
@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.UUID;
 
-import static com.r3.developers.csdetemplate.utxoexample.contracts.ChatContract.*;
+import static com.r3.developers.cordapptemplate.utxoexample.contracts.ChatContract.*;
 
 /**
  * This class is an implementation of ContractTest. This provides functions to easily perform unit tests on contracts.

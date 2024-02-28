@@ -1,7 +1,7 @@
-package com.r3.developers.csdetemplate.utxoexample.workflows;
+package com.r3.developers.cordapptemplate.utxoexample.workflows;
 
-import com.r3.developers.csdetemplate.utxoexample.contracts.ChatContract;
-import com.r3.developers.csdetemplate.utxoexample.states.ChatState;
+import com.r3.developers.cordapptemplate.utxoexample.contracts.ChatContract;
+import com.r3.developers.cordapptemplate.utxoexample.states.ChatState;
 import net.corda.v5.application.flows.*;
 import net.corda.v5.application.marshalling.JsonMarshallingService;
 import net.corda.v5.application.membership.MemberLookup;
@@ -108,7 +108,7 @@ public class CreateNewChatFlow implements ClientStartableFlow {
 RequestBody for triggering the flow via REST:
 {
     "clientRequestId": "create-1",
-    "flowClassName": "com.r3.developers.csdetemplate.utxoexample.workflows.CreateNewChatFlow",
+    "flowClassName": "com.r3.developers.cordapptemplate.utxoexample.workflows.CreateNewChatFlow",
     "requestBody": {
         "chatName":"Chat with Bob",
         "otherMember":"CN=Bob, OU=Test Dept, O=R3, L=London, C=GB",
